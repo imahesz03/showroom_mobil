@@ -45,7 +45,7 @@ $query = mysqli_query($koneksi, "SELECT * FROM pembeli ORDER BY id_pembeli DESC"
                 <!-- TITLE -->
                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
                     <div>
-                        <h1 class="h3 mb-0 text-gray-800">Data Pembeli</h1>
+                        <h1 class="h3 mb-1 text-gray-800 font-weight-bold">Data Pembeli</h1>
                         <p class="mb-0 text-gray-600">
                             Kelola dan lihat data pembeli showroom.
                         </p>

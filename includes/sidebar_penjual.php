@@ -4,11 +4,53 @@ $page = basename($_SERVER['PHP_SELF']);
 
 <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
-    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="../dashboard/penjual.php">
+    <!-- SIDEBAR BRAND -->
+    <a class="sidebar-brand d-flex align-items-center justify-content-start px-3 py-4"
+    href="../dashboard/admin.php">
+
+        <!-- ICON -->
         <div class="sidebar-brand-icon">
-            <i class="fas fa-store"></i>
+
+            <div class="bg-white shadow-sm rounded-circle d-flex align-items-center justify-content-center"
+                style="width:52px; height:52px;">
+
+                <i class="fas fa-car-side text-primary"
+                style="font-size:21px;"></i>
+
+            </div>
+
         </div>
-        <div class="sidebar-brand-text mx-2">Penjual Panel</div>
+
+        <!-- TEXT -->
+        <div class="sidebar-brand-text text-left ml-3"
+            style="line-height:1.15;">
+
+            <!-- SMALL LABEL -->
+            <div style="
+                font-size:12px;
+                letter-spacing:2px;
+                font-weight:700;
+                opacity:.75;
+                text-transform:uppercase;">
+
+                Penjual
+
+            </div>
+
+            <!-- BRAND NAME -->
+            <div style="
+                font-size:17px;
+                font-weight:900;
+                margin-top:3px;
+                color:#ffffff;">
+
+                Galaxy Showroom
+
+            </div>
+
+
+        </div>
+
     </a>
 
     <hr class="sidebar-divider my-0">

@@ -131,7 +131,7 @@ if(!$data){
             <div class="container-fluid">
 
                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                    <h1 class="h3 mb-0 text-gray-800">Pengiriman Mobil</h1>
+                    <h1 class="h3 mb-1 text-gray-800 font-weight-bold">Pengiriman Mobil</h1>
 
                     <a href="tambah_pengiriman.php" class="btn btn-primary btn-sm">
                         <i class="fas fa-plus"></i> Tambah Pengiriman
@@ -254,7 +254,7 @@ if(!$data){
                                                 <?php if(!empty($row['bukti_pengiriman'])){ ?>
                                                     <a href="../uploads/<?= htmlspecialchars($row['bukti_pengiriman']); ?>"
                                                        target="_blank"
-                                                       class="btn btn-sm btn-success">
+                                                       class="btn btn-sm btn-primary">
                                                         <i class="fas fa-eye"></i> Lihat
                                                     </a>
                                                 <?php } else { ?>
@@ -264,7 +264,7 @@ if(!$data){
 
                                             <td>
                                                 <a href="pengiriman_mobil.php?surat_jalan=<?= $row['id_pengiriman']; ?>"
-                                                   class="btn btn-sm btn-primary">
+                                                   class="btn btn-sm btn-success">
                                                     <i class="fas fa-print"></i> Cetak
                                                 </a>
                                             </td>

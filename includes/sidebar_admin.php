@@ -4,14 +4,54 @@ $page = basename($_SERVER['PHP_SELF']);
 
 <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
-    <!-- BRAND -->
-    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="../dashboard/admin.php">
-        <div class="sidebar-brand-icon">
-            <i class="fas fa-car"></i>
-        </div>
-        <div class="sidebar-brand-text mx-3">ADMIN</div>
-    </a>
+    <!-- SIDEBAR BRAND -->
+    <a class="sidebar-brand d-flex align-items-center justify-content-start px-3 py-4"
+    href="../dashboard/admin.php">
 
+        <!-- ICON -->
+        <div class="sidebar-brand-icon">
+
+            <div class="bg-white shadow-sm rounded-circle d-flex align-items-center justify-content-center"
+                style="width:52px; height:52px;">
+
+                <i class="fas fa-car-side text-primary"
+                style="font-size:21px;"></i>
+
+            </div>
+
+        </div>
+
+        <!-- TEXT -->
+        <div class="sidebar-brand-text text-left ml-3"
+            style="line-height:1.15;">
+
+            <!-- SMALL LABEL -->
+            <div style="
+                font-size:12px;
+                letter-spacing:2px;
+                font-weight:700;
+                opacity:.75;
+                text-transform:uppercase;">
+
+                Admin
+
+            </div>
+
+            <!-- BRAND NAME -->
+            <div style="
+                font-size:17px;
+                font-weight:900;
+                margin-top:3px;
+                color:#ffffff;">
+
+                Galaxy Showroom
+
+            </div>
+
+
+        </div>
+
+    </a>
     <hr class="sidebar-divider my-0">
 
     <!-- DASHBOARD -->
@@ -21,6 +61,8 @@ $page = basename($_SERVER['PHP_SELF']);
             <span>Dashboard</span>
         </a>
     </li>
+
+            <hr class="sidebar-divider d-none d-md-block">
 
     <!-- DATA MOBIL -->
     <li class="nav-item <?= in_array($page, ['data_mobil_admin.php', 'tambah_mobil.php', 'edit_mobil.php', 'hapus_mobil_admin.php']) ? 'active' : ''; ?>">
@@ -69,6 +111,56 @@ $page = basename($_SERVER['PHP_SELF']);
         </a>
     </li>
 
-    <hr class="sidebar-divider d-none d-md-block">
+        <hr class="sidebar-divider d-none d-md-block">
+
+<li class="nav-item">
+
+    <a class="nav-link collapsed"
+       href="#"
+       data-toggle="collapse"
+       data-target="#collapseLaporan"
+       aria-expanded="true"
+       aria-controls="collapseLaporan">
+
+        <i class="fas fa-fw fa-chart-bar"></i>
+        <span>Laporan</span>
+    </a>
+
+    <div id="collapseLaporan"
+         class="collapse"
+         aria-labelledby="headingLaporan"
+         data-parent="#accordionSidebar">
+
+        <div class="bg-white py-2 collapse-inner rounded shadow-sm">
+
+            <h6 class="collapse-header text-primary">
+                Menu Laporan
+            </h6>
+
+            <a class="collapse-item d-flex align-items-center"
+               href="../admin/laporan_mobil.php">
+
+                <i class="fas fa-car fa-sm mr-2 text-gray-500"></i>
+                Data Mobil
+            </a>
+
+            <a class="collapse-item d-flex align-items-center"
+               href="../admin/laporan_pembeli.php">
+
+                <i class="fas fa-users fa-sm mr-2 text-gray-500"></i>
+                Data Pembeli
+            </a>
+
+            <a class="collapse-item d-flex align-items-center"
+               href="../admin/laporan_transaksi.php">
+
+                <i class="fas fa-file-invoice-dollar fa-sm mr-2 text-gray-500"></i>
+                Transaksi
+            </a>
+
+        </div>
+    </div>
+
+</li>
 
 </ul>

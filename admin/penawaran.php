@@ -117,7 +117,7 @@ if(!$query){
 
             <div class="container-fluid">
 
-                <h1 class="h3 mb-4 text-gray-800">
+                <h1 class="h3 mb-4 text-gray-800 font-weight-bold">
                     Penawaran Mobil dari Penjual
                 </h1>
 
@@ -261,7 +261,7 @@ if(!$query){
 
                                                         <a href="../uploads/<?= htmlspecialchars($row['bukti_pembayaran']); ?>"
                                                            target="_blank"
-                                                           class="btn btn-sm btn-success">
+                                                           class="btn btn-sm btn-primary">
                                                             <i class="fas fa-eye"></i> Lihat
                                                         </a>
 
@@ -352,7 +352,7 @@ if(!$query){
 
                                                         <a href="kwitansi_penawaran.php?id=<?= $row['id_penawaran']; ?>"
                                                            target="_blank"
-                                                           class="btn btn-sm btn-primary">
+                                                           class="btn btn-sm btn-success">
                                                             <i class="fas fa-print"></i> Cetak Kwitansi
                                                         </a>
 

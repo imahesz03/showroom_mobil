@@ -98,17 +98,17 @@ if(!$query){
 
             <div class="container-fluid">
 
-                <h1 class="h3 mb-4 text-gray-800">
-                    Administrasi Kendaraan
+            <div>
+                <h1 class="h3 mb-1 text-gray-800 font-weight-bold">
+                    Administrasi Transaksi
                 </h1>
 
-                <div class="info-box">
-                    <strong>Monitoring Administrasi Kendaraan</strong><br>
-                    <span class="small-text">
-                        Halaman ini digunakan admin untuk melihat proses administrasi kendaraan berdasarkan transaksi pembeli,
-                        seperti status pesanan, pembayaran, STNK, BPKB, dan bukti transfer.
-                    </span>
-                </div>
+                <p class="mb-4 text-gray-600">
+                    Kelola data transaksi, pembayaran pelanggan, dan proses pembelian mobil showroom.
+                </p>
+            </div>
+
+                
 
                 <div class="card shadow mb-4">
 

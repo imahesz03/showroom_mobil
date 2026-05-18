@@ -54,9 +54,12 @@ ORDER BY p.id_pemesanan DESC");
 
             <div class="container-fluid">
 
-                <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                    <h1 class="h3 mb-0 text-gray-800">Kelola Transaksi</h1>
-                </div>
+            <div>
+                <h1 class="h3 mb-1 text-gray-800 font-weight-bold">Transaksi</h1>
+                <p class="mb-0 text-gray-600">
+                    Kelola transaksi pembelian, pembayaran, dan status pemesanan mobil.
+                </p>
+            </div> <br>
 
                 <div class="card shadow mb-4">
 
