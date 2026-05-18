@@ -39,7 +39,7 @@ $page = basename($_SERVER['PHP_SELF']);
 
             <!-- BRAND NAME -->
             <div style="
-                font-size:17px;
+                font-size:16px;
                 font-weight:900;
                 margin-top:3px;
                 color:#ffffff;">
