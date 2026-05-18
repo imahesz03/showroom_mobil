@@ -27,21 +27,26 @@ if(isset($_SESSION['role'])){
 
 <body class="bg-gradient-primary">
 
-<div class="container">
+<div class="container d-flex align-items-center justify-content-center" style="min-height:100vh;">
 
-    <div class="row justify-content-center">
+    <div class="row justify-content-center w-100">
 
         <div class="col-xl-5 col-lg-6 col-md-8">
 
-            <div class="card o-hidden border-0 shadow-lg my-5">
+            <div class="card o-hidden border-0 shadow-lg">
 
-                <div class="card-body p-0">
+                <div class="card-body p-3">
 
                     <div class="p-5">
 
                         <div class="text-center">
-                            <h1 class="h4 text-gray-900 mb-2">Galaxy Showroom</h1>
-                            <p class="text-muted mb-4">Silakan login ke akun Anda</p>
+                            <h1 class="h4 text-gray-900 mb-2">
+                                Galaxy Showroom
+                            </h1>
+
+                            <p class="text-muted mb-4">
+                                Silakan login ke akun Anda
+                            </p>
                         </div>
 
                         <?php if(isset($_SESSION['error'])){ ?>
@@ -74,8 +79,12 @@ if(isset($_SESSION['role'])){
                                        required>
                             </div>
 
-                            <button type="submit" name="login" class="btn btn-primary btn-user btn-block">
+                            <button type="submit"
+                                    name="login"
+                                    class="btn btn-primary btn-user btn-block">
+
                                 Login
+
                             </button>
 
                         </form>
