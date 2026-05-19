@@ -39,30 +39,23 @@ $page = basename($_SERVER['PHP_SELF']);
 
     <hr class="sidebar-divider">
 
+    <div class="sidebar-heading">
+        Mobil
+    </div>
 
     <!-- LIHAT MOBIL -->
-    <li class="nav-item <?= ($page == 'lihat_mobil.php') ? 'active' : ''; ?>">
+    <li class="nav-item <?= ($page == 'lihat_mobil.php' || $page == 'detail_mobil.php' || $page == 'pesan_mobil.php') ? 'active' : ''; ?>">
         <a class="nav-link" href="../pembeli/lihat_mobil.php">
             <i class="fas fa-fw fa-car"></i>
             <span>Lihat Mobil</span>
         </a>
     </li>
 
-    <hr class="sidebar-divider">
-
     <!-- PESANAN SAYA -->
-    <li class="nav-item <?= ($page == 'pesanan_saya.php') ? 'active' : ''; ?>">
+    <li class="nav-item <?= ($page == 'pesanan_saya.php' || $page == 'detail_pesanan.php') ? 'active' : ''; ?>">
         <a class="nav-link" href="../pembeli/pesanan_saya.php">
             <i class="fas fa-fw fa-shopping-cart"></i>
             <span>Pesanan Saya</span>
-        </a>
-    </li>
-
-    <!-- DETAIL PEMESANAN -->
-    <li class="nav-item <?= ($page == 'detail_pesanan.php') ? 'active' : ''; ?>">
-        <a class="nav-link" href="../pembeli/detail_pesanan.php">
-            <i class="fas fa-fw fa-clipboard-list"></i>
-            <span>Detail Pesanan</span>
         </a>
     </li>
 
@@ -72,27 +65,33 @@ $page = basename($_SERVER['PHP_SELF']);
         Pembayaran
     </div>
 
-    <!-- PEMBAYARAN SAYA -->
-    <li class="nav-item <?= ($page == 'pembayaran_saya.php') ? 'active' : ''; ?>">
-        <a class="nav-link" href="../pembeli/pembayaran_saya.php">
+    <!-- RIWAYAT PEMBAYARAN -->
+    <li class="nav-item <?= ($page == 'riwayat_pembayaran.php' || $page == 'pembayaran.php') ? 'active' : ''; ?>">
+        <a class="nav-link" href="../pembeli/riwayat_pembayaran.php">
             <i class="fas fa-fw fa-credit-card"></i>
-            <span>Pembayaran Saya</span>
+            <span>Riwayat Pembayaran</span>
         </a>
     </li>
 
-    <!-- UPLOAD BUKTI TRANSFER -->
-    <li class="nav-item <?= ($page == 'upload_bukti.php') ? 'active' : ''; ?>">
-        <a class="nav-link" href="../pembeli/upload_bukti.php">
-            <i class="fas fa-fw fa-upload"></i>
-            <span>Upload Bukti Transfer</span>
+    <hr class="sidebar-divider">
+
+    <div class="sidebar-heading">
+        Administrasi
+    </div>
+
+    <!-- STATUS STNK / BPKB -->
+    <li class="nav-item <?= ($page == 'status_administrasi.php') ? 'active' : ''; ?>">
+        <a class="nav-link" href="../pembeli/status_administrasi.php">
+            <i class="fas fa-fw fa-file-signature"></i>
+            <span>Status STNK/BPKB</span>
         </a>
     </li>
 
-    <!-- CETAK KWITANSI -->
-    <li class="nav-item <?= ($page == 'kwitansi_pembeli.php') ? 'active' : ''; ?>">
-        <a class="nav-link" href="../pembeli/kwitansi_pembeli.php">
-            <i class="fas fa-fw fa-print"></i>
-            <span>Cetak Kwitansi</span>
+    <!-- PENGIRIMAN MOBIL -->
+    <li class="nav-item <?= ($page == 'pengiriman_mobil.php') ? 'active' : ''; ?>">
+        <a class="nav-link" href="../pembeli/pengiriman_mobil.php">
+            <i class="fas fa-fw fa-truck"></i>
+            <span>Pengiriman Mobil</span>
         </a>
     </li>
 

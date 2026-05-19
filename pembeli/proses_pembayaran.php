@@ -7,8 +7,8 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] != "pembeli") {
     exit;
 }
 
-if (!isset($_POST['pesan'])) {
-    header("Location: lihat_mobil.php");
+if (!isset($_POST['bayar'])) {
+    header("Location: pesanan_saya.php");
     exit;
 }
 
@@ -22,10 +22,6 @@ function tambahKolomJikaBelumAda($koneksi, $tabel, $kolom, $sql)
     }
 }
 
-tambahKolomJikaBelumAda($koneksi, "pemesanan", "deadline_dp",
-    "ALTER TABLE pemesanan ADD deadline_dp DATE DEFAULT NULL"
-);
-
 tambahKolomJikaBelumAda($koneksi, "pemesanan", "foto_ktp",
     "ALTER TABLE pemesanan ADD foto_ktp VARCHAR(255) DEFAULT NULL"
 );
@@ -34,26 +30,21 @@ tambahKolomJikaBelumAda($koneksi, "pembayaran", "jenis_pembayaran",
     "ALTER TABLE pembayaran ADD jenis_pembayaran VARCHAR(50) DEFAULT 'booking'"
 );
 
-$id_mobil = mysqli_real_escape_string($koneksi, $_POST['id_mobil'] ?? '');
+$id_pemesanan = mysqli_real_escape_string($koneksi, $_POST['id_pemesanan'] ?? '');
+$jenis_pembayaran = mysqli_real_escape_string($koneksi, $_POST['jenis_pembayaran'] ?? '');
 $metode_bayar = mysqli_real_escape_string($koneksi, $_POST['metode_bayar'] ?? '');
-$jumlah_bayar = 500000;
+$jumlah = (float) ($_POST['jumlah'] ?? 0);
 
-if (empty($id_mobil) || empty($metode_bayar)) {
-    $_SESSION['error'] = "Data booking belum lengkap.";
-    header("Location: pesan_mobil.php?id=$id_mobil");
-    exit;
-}
-
-if (!in_array($metode_bayar, ['cash', 'tunai', 'transfer'])) {
-    $_SESSION['error'] = "Metode bayar tidak valid.";
-    header("Location: pesan_mobil.php?id=$id_mobil");
+if (empty($id_pemesanan) || empty($jenis_pembayaran) || empty($metode_bayar) || $jumlah < 0) {
+    $_SESSION['error'] = "Data pembayaran belum lengkap.";
+    header("Location: pesanan_saya.php");
     exit;
 }
 
 $qPembeli = mysqli_query($koneksi, "
     SELECT id_pembeli 
     FROM pembeli 
-    WHERE id_user='$id_user' 
+    WHERE id_user='$id_user'
     LIMIT 1
 ");
 
@@ -66,40 +57,21 @@ if (!$qPembeli || mysqli_num_rows($qPembeli) == 0) {
 $pembeli = mysqli_fetch_assoc($qPembeli);
 $id_pembeli = $pembeli['id_pembeli'];
 
-$qMobil = mysqli_query($koneksi, "
-    SELECT * FROM mobil 
-    WHERE id_mobil='$id_mobil' 
-    LIMIT 1
-");
-
-if (!$qMobil || mysqli_num_rows($qMobil) == 0) {
-    $_SESSION['error'] = "Mobil tidak ditemukan.";
-    header("Location: lihat_mobil.php");
-    exit;
-}
-
-$mobil = mysqli_fetch_assoc($qMobil);
-
-if ($mobil['stok'] <= 0 || strtolower($mobil['status']) == 'terjual') {
-    $_SESSION['error'] = "Mobil tidak tersedia.";
-    header("Location: lihat_mobil.php");
-    exit;
-}
-
-$cekPesanan = mysqli_query($koneksi, "
-    SELECT id_pemesanan 
+$qPesanan = mysqli_query($koneksi, "
+    SELECT *
     FROM pemesanan
-    WHERE id_pembeli='$id_pembeli'
-    AND id_mobil='$id_mobil'
-    AND status IN ('booking','dp','lunas')
+    WHERE id_pemesanan='$id_pemesanan'
+    AND id_pembeli='$id_pembeli'
     LIMIT 1
 ");
 
-if ($cekPesanan && mysqli_num_rows($cekPesanan) > 0) {
-    $_SESSION['error'] = "Kamu sudah punya pesanan aktif untuk mobil ini.";
+if (!$qPesanan || mysqli_num_rows($qPesanan) == 0) {
+    $_SESSION['error'] = "Pesanan tidak ditemukan.";
     header("Location: pesanan_saya.php");
     exit;
 }
+
+$pesanan = mysqli_fetch_assoc($qPesanan);
 
 $folderUpload = "../uploads/";
 
@@ -134,49 +106,36 @@ function uploadFile($field, $prefix, $folderUpload)
 $bukti_pembayaran = "-";
 
 if ($metode_bayar == "transfer") {
-    $uploadBukti = uploadFile("bukti_pembayaran", "bukti_booking", $folderUpload);
+    $uploadBukti = uploadFile("bukti_pembayaran", "bukti_bayar", $folderUpload);
 
     if ($uploadBukti == "" || in_array($uploadBukti, ["FORMAT_SALAH", "UKURAN_BESAR", "UPLOAD_GAGAL"])) {
-        $_SESSION['error'] = "Bukti transfer wajib diupload. Format JPG/PNG/WEBP maksimal 2MB.";
-        header("Location: pesan_mobil.php?id=$id_mobil");
+        $_SESSION['error'] = "Bukti transfer wajib diupload.";
+        header("Location: pembayaran.php?id=$id_pemesanan&jenis=$jenis_pembayaran");
         exit;
     }
 
     $bukti_pembayaran = $uploadBukti;
 }
 
-$deadline_dp = date('Y-m-d', strtotime('+7 days'));
-$total_harga = (float)$mobil['harga'];
+$uploadKtp = uploadFile("foto_ktp", "ktp", $folderUpload);
 
-mysqli_begin_transaction($koneksi);
-
-$simpanPemesanan = mysqli_query($koneksi, "
-    INSERT INTO pemesanan
-    (
-        id_pembeli,
-        id_mobil,
-        tanggal_pesan,
-        total_harga,
-        status,
-        deadline_dp
-    )
-    VALUES
-    (
-        '$id_pembeli',
-        '$id_mobil',
-        NOW(),
-        '$total_harga',
-        'booking',
-        '$deadline_dp'
-    )
-");
-
-if (!$simpanPemesanan) {
-    mysqli_rollback($koneksi);
-    die("Gagal simpan pemesanan: " . mysqli_error($koneksi));
+if ($uploadKtp == "" || in_array($uploadKtp, ["FORMAT_SALAH", "UKURAN_BESAR", "UPLOAD_GAGAL"])) {
+    $_SESSION['error'] = "KTP wajib diupload.";
+    header("Location: pembayaran.php?id=$id_pemesanan&jenis=$jenis_pembayaran");
+    exit;
 }
 
-$id_pemesanan = mysqli_insert_id($koneksi);
+if ($jenis_pembayaran == "dp") {
+    $statusBaru = "dp";
+} elseif ($jenis_pembayaran == "pelunasan") {
+    $statusBaru = "lunas";
+} else {
+    $_SESSION['error'] = "Jenis pembayaran tidak valid.";
+    header("Location: pesanan_saya.php");
+    exit;
+}
+
+mysqli_begin_transaction($koneksi);
 
 $simpanPembayaran = mysqli_query($koneksi, "
     INSERT INTO pembayaran
@@ -192,28 +151,26 @@ $simpanPembayaran = mysqli_query($koneksi, "
     (
         '$id_pemesanan',
         '$metode_bayar',
-        '$jumlah_bayar',
+        '$jumlah',
         'diterima',
         '$bukti_pembayaran',
-        'booking'
+        '$jenis_pembayaran'
     )
 ");
 
-$updateMobil = mysqli_query($koneksi, "
-    UPDATE mobil SET
-        stok = stok - 1,
-        status = CASE 
-            WHEN stok - 1 <= 0 THEN 'terjual'
-            ELSE status
-        END
-    WHERE id_mobil='$id_mobil'
+$updatePesanan = mysqli_query($koneksi, "
+    UPDATE pemesanan SET
+        status='$statusBaru',
+        foto_ktp='$uploadKtp'
+    WHERE id_pemesanan='$id_pemesanan'
+    AND id_pembeli='$id_pembeli'
 ");
 
-if ($simpanPembayaran && $updateMobil) {
+if ($simpanPembayaran && $updatePesanan) {
     mysqli_commit($koneksi);
 
     echo "<script>
-        alert('Booking berhasil. Silakan lanjut DP atau pelunasan di menu Pesanan Saya.');
+        alert('Pembayaran berhasil disimpan.');
         window.location='pesanan_saya.php';
     </script>";
     exit;
@@ -221,8 +178,8 @@ if ($simpanPembayaran && $updateMobil) {
     mysqli_rollback($koneksi);
 
     echo "<script>
-        alert('Gagal membuat booking!');
-        window.location='pesan_mobil.php?id=$id_mobil';
+        alert('Gagal menyimpan pembayaran!');
+        window.location='pembayaran.php?id=$id_pemesanan&jenis=$jenis_pembayaran';
     </script>";
     exit;
 }
