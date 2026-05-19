@@ -99,12 +99,6 @@ session_start();
                             <p class="text-muted mb-4">Silakan lengkapi data registrasi</p>
                         </div>
 
-                        <?php if(isset($_SESSION['error'])){ ?>
-                            <div class="alert alert-danger">
-                                <?= $_SESSION['error']; unset($_SESSION['error']); ?>
-                            </div>
-                        <?php } ?>
-
                         <form class="user" action="proses_register.php" method="POST">
 
                             <div class="form-group">
@@ -197,6 +191,29 @@ session_start();
 <script src="../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="../assets/vendor/jquery-easing/jquery.easing.min.js"></script>
 <script src="../assets/js/sb-admin-2.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<?php if(isset($_SESSION['error'])){ ?>
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function(){
+
+    Swal.fire({
+        icon: 'error',
+        title: 'Registrasi Gagal',
+        text: '<?= $_SESSION['error']; ?>',
+        showConfirmButton: false,
+        timer: 1800,
+        timerProgressBar: true
+    });
+
+});
+
+</script>
+
+<?php unset($_SESSION['error']); } ?>
 
 </body>
 </html>

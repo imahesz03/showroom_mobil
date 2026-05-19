@@ -40,7 +40,7 @@ if(isset($_SESSION['role'])){
                     <div class="p-5">
 
                         <div class="text-center">
-                            <h1 class="h4 text-gray-900 mb-2">
+                            <h1 class="h3 text-gray-900 mb-2">
                                 Galaxy Showroom
                             </h1>
 
@@ -48,18 +48,6 @@ if(isset($_SESSION['role'])){
                                 Silakan login ke akun Anda
                             </p>
                         </div>
-
-                        <?php if(isset($_SESSION['error'])){ ?>
-                            <div class="alert alert-danger">
-                                <?= $_SESSION['error']; unset($_SESSION['error']); ?>
-                            </div>
-                        <?php } ?>
-
-                        <?php if(isset($_SESSION['success'])){ ?>
-                            <div class="alert alert-success">
-                                <?= $_SESSION['success']; unset($_SESSION['success']); ?>
-                            </div>
-                        <?php } ?>
 
                         <form class="user" action="proses_login.php" method="POST">
 
@@ -113,6 +101,28 @@ if(isset($_SESSION['role'])){
 <script src="../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="../assets/vendor/jquery-easing/jquery.easing.min.js"></script>
 <script src="../assets/js/sb-admin-2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<?php if(isset($_SESSION['error'])){ ?>
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function(){
+
+    Swal.fire({
+        icon: 'error',
+        title: 'Login Gagal',
+        text: '<?= $_SESSION['error']; ?>',
+        showConfirmButton: false,
+        timer: 1800,
+        timerProgressBar: true
+    });
+
+});
+
+</script>
+
+<?php unset($_SESSION['error']); } ?>
 
 </body>
 </html>
