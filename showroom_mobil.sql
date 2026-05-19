@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 16, 2026 at 07:54 PM
+-- Generation Time: May 19, 2026 at 04:16 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -277,7 +277,7 @@ CREATE TABLE `pengiriman` (
 INSERT INTO `pengiriman` (`id_pengiriman`, `id_pemesanan`, `id_kurir`, `alamat_kirim`, `status`, `bukti_pengiriman`, `tanggal_terkirim`) VALUES
 (1, 24, 1, 'JL ARIA SANTIKA GG SAMAUN RT 5 RW 5', 'terkirim', 'bukti_pengiriman_1778948968_1731.jpg', '2026-05-16 23:29:28'),
 (2, 23, 1, 'JL ARIA SANTIKA GG SAMAUN RT 5 RW 5', 'terkirim', 'bukti_pengiriman_1778949454_3374.jpg', '2026-05-16 23:37:34'),
-(3, 22, 1, 'perumahan wisma mas blok z no 99 rt 99 rw 99', 'diproses', NULL, NULL);
+(3, 22, 1, 'perumahan wisma mas blok z no 99 rt 99 rw 99', 'terkirim', 'bukti_pengiriman_1779128934_3372.jpg', '2026-05-19 01:28:54');
 
 -- --------------------------------------------------------
 

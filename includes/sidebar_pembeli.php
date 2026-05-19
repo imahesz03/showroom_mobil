@@ -2,89 +2,114 @@
 $page = basename($_SERVER['PHP_SELF']);
 ?>
 
-<div class="sidebar">
+<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
-    <h2>SHOWROOM</h2>
+    <!-- BRAND -->
+    <a class="sidebar-brand d-flex align-items-center justify-content-start px-3 py-4"
+       href="../dashboard/pembeli.php">
 
-    <ul>
+        <div class="sidebar-brand-icon">
+            <div class="bg-white shadow-sm rounded-circle d-flex align-items-center justify-content-center"
+                 style="width:52px; height:52px;">
+                <i class="fas fa-car-side text-primary" style="font-size:21px;"></i>
+            </div>
+        </div>
 
-        <!-- DASHBOARD -->
+        <div class="sidebar-brand-text text-left ml-3" style="line-height:1.15;">
+            <div style="font-size:12px; letter-spacing:2px; font-weight:700; opacity:.75; text-transform:uppercase;">
+                Pembeli
+            </div>
 
-        <li>
+            <div style="font-size:16px; font-weight:900; margin-top:3px; color:#ffffff;">
+                Galaxy Showroom
+            </div>
+        </div>
 
-            <a href="../dashboard/pembeli.php"
-            class="<?= ($page == 'pembeli.php') ? 'active' : ''; ?>">
+    </a>
 
-                Dashboard
+    <hr class="sidebar-divider my-0">
 
-            </a>
+    <!-- DASHBOARD -->
+    <li class="nav-item <?= ($page == 'pembeli.php') ? 'active' : ''; ?>">
+        <a class="nav-link" href="../dashboard/pembeli.php">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Dashboard</span>
+        </a>
+    </li>
 
-        </li>
-
-
-        <!-- LIHAT MOBIL -->
-
-        <li>
-
-            <a href="../pembeli_mobil/lihat_mobil.php"
-            class="<?= ($page == 'lihat_mobil.php') ? 'active' : ''; ?>">
-
-                Lihat Mobil
-
-            </a>
-
-        </li>
-
-
-        <!-- PEMESANAN -->
-
-        <li>
-
-            <a href="../pembeli_mobil/pesanan_saya.php"
-            class="<?= ($page == 'pesanan_saya.php') ? 'active' : ''; ?>">
-
-                Pesanan Saya
-
-            </a>
-
-        </li>
+    <hr class="sidebar-divider">
 
 
-        <!-- PEMBAYARAN -->
+    <!-- LIHAT MOBIL -->
+    <li class="nav-item <?= ($page == 'lihat_mobil.php') ? 'active' : ''; ?>">
+        <a class="nav-link" href="../pembeli/lihat_mobil.php">
+            <i class="fas fa-fw fa-car"></i>
+            <span>Lihat Mobil</span>
+        </a>
+    </li>
 
-        <li>
+    <hr class="sidebar-divider">
 
+    <!-- PESANAN SAYA -->
+    <li class="nav-item <?= ($page == 'pesanan_saya.php') ? 'active' : ''; ?>">
+        <a class="nav-link" href="../pembeli/pesanan_saya.php">
+            <i class="fas fa-fw fa-shopping-cart"></i>
+            <span>Pesanan Saya</span>
+        </a>
+    </li>
 
+    <!-- DETAIL PEMESANAN -->
+    <li class="nav-item <?= ($page == 'detail_pesanan.php') ? 'active' : ''; ?>">
+        <a class="nav-link" href="../pembeli/detail_pesanan.php">
+            <i class="fas fa-fw fa-clipboard-list"></i>
+            <span>Detail Pesanan</span>
+        </a>
+    </li>
 
-        </li>
+    <hr class="sidebar-divider">
 
+    <div class="sidebar-heading">
+        Pembayaran
+    </div>
 
-        <!-- PROFILE -->
+    <!-- PEMBAYARAN SAYA -->
+    <li class="nav-item <?= ($page == 'pembayaran_saya.php') ? 'active' : ''; ?>">
+        <a class="nav-link" href="../pembeli/pembayaran_saya.php">
+            <i class="fas fa-fw fa-credit-card"></i>
+            <span>Pembayaran Saya</span>
+        </a>
+    </li>
 
-        <li>
+    <!-- UPLOAD BUKTI TRANSFER -->
+    <li class="nav-item <?= ($page == 'upload_bukti.php') ? 'active' : ''; ?>">
+        <a class="nav-link" href="../pembeli/upload_bukti.php">
+            <i class="fas fa-fw fa-upload"></i>
+            <span>Upload Bukti Transfer</span>
+        </a>
+    </li>
 
-            <a href="#">
+    <!-- CETAK KWITANSI -->
+    <li class="nav-item <?= ($page == 'kwitansi_pembeli.php') ? 'active' : ''; ?>">
+        <a class="nav-link" href="../pembeli/kwitansi_pembeli.php">
+            <i class="fas fa-fw fa-print"></i>
+            <span>Cetak Kwitansi</span>
+        </a>
+    </li>
 
-                Profile
+    <hr class="sidebar-divider">
 
-            </a>
+    <div class="sidebar-heading">
+        Riwayat
+    </div>
 
-        </li>
+    <!-- RIWAYAT PEMBELIAN -->
+    <li class="nav-item <?= ($page == 'riwayat_pembelian.php') ? 'active' : ''; ?>">
+        <a class="nav-link" href="../pembeli/riwayat_pembelian.php">
+            <i class="fas fa-fw fa-history"></i>
+            <span>Riwayat Pembelian</span>
+        </a>
+    </li>
 
+    <hr class="sidebar-divider d-none d-md-block">
 
-        <!-- LOGOUT -->
-
-        <li>
-
-            <a href="../auth/logout.php"
-            class="logout-btn">
-
-                Logout
-
-            </a>
-
-        </li>
-
-    </ul>
-
-</div>
+</ul>
