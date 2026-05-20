@@ -65,6 +65,7 @@ if(!$query){
 
     <link href="../assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
     <link href="../assets/css/sb-admin-2.min.css" rel="stylesheet">
+    <link href="../assets/css/admin.css" rel="stylesheet">
 
     <style>
         .table td{
@@ -95,7 +96,7 @@ if(!$query){
         }
 
         .aksi-box{
-            min-width: 310px;
+            min-width: 50px;
         }
     </style>
 </head>

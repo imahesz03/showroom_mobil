@@ -20,8 +20,8 @@ $page = basename($_SERVER['PHP_SELF']);
     <hr class="sidebar-divider my-0">
 
     <!-- DASHBOARD -->
-    <li class="nav-item <?= ($page == 'kurir.php') ? 'active' : ''; ?>">
-        <a class="nav-link" href="../dashboard/kurir.php">
+    <li class="nav-item <?= ($page == 'dashboard.php') ? 'active' : ''; ?>">
+        <a class="nav-link" href="../kurir/dashboard.php">
 
             <i class="fas fa-fw fa-home"></i>
             <span>Dashboard</span>

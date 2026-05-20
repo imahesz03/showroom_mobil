@@ -6,7 +6,7 @@ $page = basename($_SERVER['PHP_SELF']);
 
     <!-- SIDEBAR BRAND -->
     <a class="sidebar-brand d-flex align-items-center justify-content-start px-3 py-4"
-    href="../dashboard/admin.php">
+    href="../admin/dashboard.php">
 
         <!-- ICON -->
         <div class="sidebar-brand-icon">
@@ -48,15 +48,14 @@ $page = basename($_SERVER['PHP_SELF']);
 
             </div>
 
-
         </div>
 
     </a>
     <hr class="sidebar-divider my-0">
 
     <!-- DASHBOARD -->
-    <li class="nav-item <?= ($page == 'admin.php') ? 'active' : ''; ?>">
-        <a class="nav-link" href="../dashboard/admin.php">
+    <li class="nav-item <?= ($page == 'dashboard.php') ? 'active' : ''; ?>">
+        <a class="nav-link" href="../admin/dashboard.php">
             <i class="fas fa-fw fa-home"></i>
             <span>Dashboard</span>
         </a>

@@ -55,8 +55,8 @@ $page = basename($_SERVER['PHP_SELF']);
 
     <hr class="sidebar-divider my-0">
 
-    <li class="nav-item <?= ($page == 'penjual.php') ? 'active' : ''; ?>">
-        <a class="nav-link" href="../dashboard/penjual.php">
+    <li class="nav-item <?= ($page == 'dashboard.php') ? 'active' : ''; ?>">
+        <a class="nav-link" href="../penjual/dashboard.php">
             <i class="fas fa-fw fa-home"></i>
             <span>Dashboard</span>
         </a>

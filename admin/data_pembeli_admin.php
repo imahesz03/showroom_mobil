@@ -21,6 +21,8 @@ $query = mysqli_query($koneksi, "SELECT * FROM pembeli ORDER BY id_pembeli DESC"
     <!-- SB ADMIN 2 CSS -->
     <link href="../assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
     <link href="../assets/css/sb-admin-2.min.css" rel="stylesheet">
+    <link href="../assets/css/admin.css" rel="stylesheet">
+    
 </head>
 
 <body id="page-top">

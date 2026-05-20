@@ -30,9 +30,9 @@ $page = basename($_SERVER['PHP_SELF']);
     <hr class="sidebar-divider my-0">
 
     <!-- DASHBOARD -->
-    <li class="nav-item <?= ($page == 'pembeli.php') ? 'active' : ''; ?>">
-        <a class="nav-link" href="../dashboard/pembeli.php">
-            <i class="fas fa-fw fa-tachometer-alt"></i>
+    <li class="nav-item <?= ($page == 'dashboard.php') ? 'active' : ''; ?>">
+        <a class="nav-link" href="../pembeli/dashboard.php">
+            <i class="fas fa-fw fa-home"></i>
             <span>Dashboard</span>
         </a>
     </li>

@@ -3,13 +3,13 @@ session_start();
 
 if(isset($_SESSION['role'])){
     if($_SESSION['role'] == 'admin'){
-        header("Location: ../dashboard/admin.php");
+        header("Location: ../admin/dashboard.php");
     } elseif($_SESSION['role'] == 'pembeli'){
-        header("Location: ../dashboard/pembeli.php");
+        header("Location: ../pembeli/dashboard.php");
     } elseif($_SESSION['role'] == 'penjual'){
-        header("Location: ../dashboard/penjual.php");
+        header("Location: ../penjual/dashboard.php");
     } elseif($_SESSION['role'] == 'kurir'){
-        header("Location: ../dashboard/kurir.php");
+        header("Location: ../kurir/dashboard.php");
     }
     exit;
 }
