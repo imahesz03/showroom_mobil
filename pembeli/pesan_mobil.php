@@ -14,6 +14,8 @@ if (empty($id_mobil)) {
     exit;
 }
 
+$id_mobil = mysqli_real_escape_string($koneksi, $id_mobil);
+
 $qMobil = mysqli_query($koneksi, "
     SELECT * FROM mobil 
     WHERE id_mobil='$id_mobil' 
@@ -27,8 +29,8 @@ if (!$qMobil || mysqli_num_rows($qMobil) == 0) {
 
 $mobil = mysqli_fetch_assoc($qMobil);
 
-if ($mobil['stok'] <= 0 || strtolower($mobil['status']) == 'terjual') {
-    echo "<script>alert('Mobil tidak tersedia!'); window.location='lihat_mobil.php';</script>";
+if ((int)$mobil['stok'] <= 0) {
+    echo "<script>alert('Stok mobil habis!'); window.location='lihat_mobil.php';</script>";
     exit;
 }
 
@@ -38,7 +40,10 @@ function rupiah($angka){
 
 $booking_fee = 500000;
 $harga_mobil = (float)$mobil['harga'];
-$dp30 = $harga_mobil * 30 / 100;
+$dp30 = $harga_mobil * 0.30;
+$sisa_dp = max($dp30 - $booking_fee, 0);
+$pelunasan = $harga_mobil - $dp30;
+
 $foto = !empty($mobil['foto']) ? "../uploads/" . $mobil['foto'] : "../assets/img/undraw_posting_photo.svg";
 ?>
 
@@ -47,8 +52,10 @@ $foto = !empty($mobil['foto']) ? "../uploads/" . $mobil['foto'] : "../assets/img
 <head>
     <meta charset="UTF-8">
     <title>Pesan Mobil</title>
+
     <link href="../assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
     <link href="../assets/css/sb-admin-2.min.css" rel="stylesheet">
+    <link href="../assets/css/admin.css" rel="stylesheet">
 </head>
 
 <body id="page-top">
@@ -61,14 +68,19 @@ $foto = !empty($mobil['foto']) ? "../uploads/" . $mobil['foto'] : "../assets/img
 
         <div id="content">
 
-            <?php $pageTitle = "Pesan Mobil"; include "../includes/topbar.php"; ?>
+            <?php 
+            $pageTitle = "Pesan Mobil"; 
+            include "../includes/topbar.php"; 
+            ?>
 
             <div class="container-fluid">
 
                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
                     <div>
                         <h1 class="h3 mb-1 text-gray-800 font-weight-bold">Pesan Mobil</h1>
-                        <p class="mb-0 text-gray-600">Bayar bukti pesanan awal sebesar Rp 500.000.</p>
+                        <p class="mb-0 text-gray-600">
+                            Booking mobil terlebih dahulu sebesar Rp 500.000.
+                        </p>
                     </div>
 
                     <a href="lihat_mobil.php" class="btn btn-secondary btn-sm">
@@ -109,10 +121,12 @@ $foto = !empty($mobil['foto']) ? "../uploads/" . $mobil['foto'] : "../assets/img
 
                                 <hr>
 
-                                <p class="mb-1">DP 30%</p>
-                                <h6 class="font-weight-bold text-info">
-                                    <?= rupiah($dp30); ?>
-                                </h6>
+                                <div class="text-left">
+                                    <p class="mb-1">Booking: <strong><?= rupiah($booking_fee); ?></strong></p>
+                                    <p class="mb-1">DP 30%: <strong><?= rupiah($dp30); ?></strong></p>
+                                    <p class="mb-1">Sisa DP: <strong><?= rupiah($sisa_dp); ?></strong></p>
+                                    <p class="mb-0">Pelunasan: <strong><?= rupiah($pelunasan); ?></strong></p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -128,17 +142,17 @@ $foto = !empty($mobil['foto']) ? "../uploads/" . $mobil['foto'] : "../assets/img
                             <div class="card-body">
 
                                 <div class="alert alert-info">
-                                    <strong>Alur sederhana:</strong><br>
-                                    1. Bayar bukti pesanan awal <strong>Rp 500.000</strong>.<br>
-                                    2. Setelah booking, kamu bisa pilih <strong>Bayar DP 30%</strong> atau langsung <strong>Pelunasan</strong>.<br>
-                                    3. Jika bayar DP/pelunasan, wajib upload KTP untuk proses STNK/BPKB.<br>
-                                    4. Jika dalam 1 minggu tidak lanjut DP/pelunasan, pesanan dianggap batal.
+                                    <strong>Alur Pembayaran:</strong><br>
+                                    1. Booking sebesar <strong>Rp 500.000</strong>.<br>
+                                    2. Status pesanan menjadi <strong>Booking</strong>.<br>
+                                    3. Lanjut bayar DP dalam waktu <strong>7 hari</strong>.<br>
+                                    4. Setelah DP masuk, status menjadi <strong>DP</strong>.<br>
+                                    5. Setelah pelunasan masuk, status menjadi <strong>Lunas</strong>.
                                 </div>
 
                                 <form action="proses_pesan_mobil.php" method="POST" enctype="multipart/form-data">
 
-                                    <input type="hidden" name="id_mobil" value="<?= $mobil['id_mobil']; ?>">
-                                    <input type="hidden" name="jumlah_bayar" value="<?= $booking_fee; ?>">
+                                    <input type="hidden" name="id_mobil" value="<?= htmlspecialchars($mobil['id_mobil']); ?>">
 
                                     <div class="form-group">
                                         <label>Total Harga Mobil</label>
@@ -146,7 +160,7 @@ $foto = !empty($mobil['foto']) ? "../uploads/" . $mobil['foto'] : "../assets/img
                                     </div>
 
                                     <div class="form-group">
-                                        <label>Bukti Pesanan Awal</label>
+                                        <label>Jumlah Booking</label>
                                         <input type="text" class="form-control" value="<?= rupiah($booking_fee); ?>" readonly>
                                     </div>
 
@@ -154,7 +168,7 @@ $foto = !empty($mobil['foto']) ? "../uploads/" . $mobil['foto'] : "../assets/img
                                         <label>Metode Bayar</label>
                                         <select name="metode_bayar" id="metodeBayar" class="form-control" required>
                                             <option value="">-- Pilih Metode --</option>
-                                            <option value="cash">Cash / Tunai</option>
+                                            <option value="tunai">Tunai</option>
                                             <option value="transfer">Transfer</option>
                                         </select>
                                     </div>
@@ -167,7 +181,9 @@ $foto = !empty($mobil['foto']) ? "../uploads/" . $mobil['foto'] : "../assets/img
                                                class="form-control-file"
                                                accept="image/jpeg,image/png,image/webp">
 
-                                        <small class="text-muted">Wajib jika transfer. Format JPG/PNG/WEBP maks 2MB.</small>
+                                        <small class="text-muted">
+                                            Wajib jika transfer. Format JPG, PNG, atau WEBP maksimal 2MB.
+                                        </small>
                                     </div>
 
                                     <button type="submit" name="pesan" class="btn btn-primary">

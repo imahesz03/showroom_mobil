@@ -23,6 +23,7 @@ if(isset($_SESSION['role'])){
 
     <link href="../assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
     <link href="../assets/css/sb-admin-2.min.css" rel="stylesheet">
+    <link href="../assets/css/admin.css" rel="stylesheet">
 </head>
 
 <body class="bg-gradient-primary">
@@ -40,7 +41,7 @@ if(isset($_SESSION['role'])){
                     <div class="p-5">
 
                         <div class="text-center">
-                            <h1 class="h3 text-gray-900 mb-2">
+                            <h1 class="h1 text-gray-900 mb-2">
                                 Galaxy Showroom
                             </h1>
 
@@ -81,7 +82,7 @@ if(isset($_SESSION['role'])){
 
                         <div class="text-center">
                             <a class="small" href="register.php">
-                                Belum punya akun? Daftar sekarang
+                                Belum punya akun? Daftar sekarang!
                             </a>
                         </div>
 

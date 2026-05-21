@@ -13,7 +13,7 @@ $page = basename($_SERVER['PHP_SELF']);
         </div>
 
         <div class="sidebar-brand-text mx-2">
-            Kurir Panel
+            Kurirr
         </div>
     </a>
 

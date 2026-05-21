@@ -32,7 +32,6 @@ if (!$qPembeli || mysqli_num_rows($qPembeli) == 0) {
 $pembeli = mysqli_fetch_assoc($qPembeli);
 $id_pembeli = $pembeli['id_pembeli'];
 
-/* AUTO BATAL BOOKING LEWAT 7 HARI */
 $qExpired = mysqli_query($koneksi, "
     SELECT id_pemesanan, id_mobil
     FROM pemesanan
@@ -58,13 +57,6 @@ if ($qExpired && mysqli_num_rows($qExpired) > 0) {
     }
 }
 
-/*
-|------------------------------------------------------
-| DATA PESANAN
-| 1 pesanan = 1 baris
-| pembayaran diringkas pakai subquery
-|------------------------------------------------------
-*/
 $queryPesanan = mysqli_query($koneksi, "
     SELECT 
         p.*,
@@ -119,6 +111,7 @@ if (!$queryPesanan) {
 
     <link href="../assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
     <link href="../assets/css/sb-admin-2.min.css" rel="stylesheet">
+    <link href="../assets/css/admin.css" rel="stylesheet">
 </head>
 
 <body id="page-top">
@@ -216,7 +209,6 @@ if (!$queryPesanan) {
                                         $totalHarga = (float)$row['total_harga'];
                                         $totalBayar = (float)$row['total_bayar'];
                                         $sisaBayar = max($totalHarga - $totalBayar, 0);
-
                                         $dp30 = $totalHarga * 30 / 100;
 
                                         $deadline = !empty($row['deadline_dp'])
@@ -227,28 +219,14 @@ if (!$queryPesanan) {
                                         <tr>
 
                                             <td class="text-center align-middle">
-
-                                                <div class="position-relative d-inline-block">
-
-                                                    <img src="<?= htmlspecialchars($foto); ?>"
-                                                         class="img-thumbnail"
-                                                         width="75"
-                                                         height="55"
-                                                         style="object-fit:cover; cursor:pointer;"
-                                                         data-toggle="modal"
-                                                         data-target="#modalFoto<?= $row['id_pemesanan']; ?>"
-                                                         onerror="this.src='../assets/img/undraw_posting_photo.svg'">
-
-                                                    <div class="position-absolute w-100 h-100 d-flex align-items-center justify-content-center"
-                                                         style="top:0; left:0; background:rgba(0,0,0,.45); opacity:0; transition:.2s; border-radius:.35rem; cursor:pointer;"
-                                                         onmouseover="this.style.opacity='1'"
-                                                         onmouseout="this.style.opacity='0'"
-                                                         data-toggle="modal"
-                                                         data-target="#modalFoto<?= $row['id_pemesanan']; ?>">
-                                                        <i class="fas fa-search-plus text-white"></i>
-                                                    </div>
-
-                                                </div>
+                                                <img src="<?= htmlspecialchars($foto); ?>"
+                                                     class="img-thumbnail"
+                                                     width="75"
+                                                     height="55"
+                                                     style="object-fit:cover; cursor:pointer;"
+                                                     data-toggle="modal"
+                                                     data-target="#modalFoto<?= $row['id_pemesanan']; ?>"
+                                                     onerror="this.src='../assets/img/undraw_posting_photo.svg'">
 
                                                 <div class="modal fade" id="modalFoto<?= $row['id_pemesanan']; ?>" tabindex="-1">
                                                     <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -271,7 +249,6 @@ if (!$queryPesanan) {
                                                         </div>
                                                     </div>
                                                 </div>
-
                                             </td>
 
                                             <td class="align-middle">
@@ -283,7 +260,7 @@ if (!$queryPesanan) {
                                                     Tahun <?= htmlspecialchars($row['tahun'] ?? '-'); ?>
                                                 </div>
 
-                                                <?php if($status == "booking") : ?>
+                                                <?php if ($status == "booking") : ?>
                                                     <div class="small text-warning mt-1">
                                                         Deadline DP: <?= $deadline; ?>
                                                     </div>
@@ -322,12 +299,13 @@ if (!$queryPesanan) {
 
                                             <td class="align-middle text-center">
 
-                                                <div class="dropdown">
+                                                <div class="dropdown aksi-dropdown">
 
                                                     <button class="btn btn-primary btn-sm dropdown-toggle"
                                                             type="button"
                                                             id="dropdownAksi<?= $row['id_pemesanan']; ?>"
                                                             data-toggle="dropdown"
+                                                            data-boundary="window"
                                                             aria-haspopup="true"
                                                             aria-expanded="false">
                                                         <i class="fas fa-cog mr-1"></i>
@@ -337,6 +315,10 @@ if (!$queryPesanan) {
                                                     <div class="dropdown-menu dropdown-menu-right shadow"
                                                          aria-labelledby="dropdownAksi<?= $row['id_pemesanan']; ?>">
 
+                                                        <h6 class="dropdown-header">
+                                                            Pilihan Aksi
+                                                        </h6>
+
                                                         <a href="detail_pesanan.php?id=<?= $row['id_pemesanan']; ?>"
                                                            class="dropdown-item">
                                                             <i class="fas fa-eye fa-sm fa-fw mr-2 text-info"></i>
@@ -344,25 +326,21 @@ if (!$queryPesanan) {
                                                         </a>
 
                                                         <?php if (!empty($row['bukti_pembayaran']) && $row['bukti_pembayaran'] != "-") : ?>
-
                                                             <a href="../uploads/<?= htmlspecialchars($row['bukti_pembayaran']); ?>"
                                                                target="_blank"
                                                                class="dropdown-item">
-                                                                <i class="fas fa-image fa-sm fa-fw mr-2 text-warning"></i>
+                                                                <i class="fas fa-receipt fa-sm fa-fw mr-2 text-warning"></i>
                                                                 Lihat Bukti Bayar
                                                             </a>
-
                                                         <?php endif; ?>
 
                                                         <?php if (!empty($row['foto_ktp'])) : ?>
-
                                                             <a href="../uploads/<?= htmlspecialchars($row['foto_ktp']); ?>"
                                                                target="_blank"
                                                                class="dropdown-item">
                                                                 <i class="fas fa-id-card fa-sm fa-fw mr-2 text-primary"></i>
                                                                 Lihat KTP
                                                             </a>
-
                                                         <?php endif; ?>
 
                                                         <?php if ($status == "booking") : ?>
@@ -378,7 +356,7 @@ if (!$queryPesanan) {
                                                             <a href="pembayaran.php?id=<?= $row['id_pemesanan']; ?>&jenis=pelunasan"
                                                                class="dropdown-item">
                                                                 <i class="fas fa-credit-card fa-sm fa-fw mr-2 text-success"></i>
-                                                                Langsung Lunasi
+                                                                Bayar Pelunasan
                                                             </a>
 
                                                             <a href="proses_batal.php?id=<?= $row['id_pemesanan']; ?>"
@@ -388,21 +366,17 @@ if (!$queryPesanan) {
                                                                 Batalkan Pesanan
                                                             </a>
 
-                                                        <?php endif; ?>
-
-                                                        <?php if ($status == "dp") : ?>
+                                                        <?php elseif ($status == "dp") : ?>
 
                                                             <div class="dropdown-divider"></div>
 
                                                             <a href="pembayaran.php?id=<?= $row['id_pemesanan']; ?>&jenis=pelunasan"
                                                                class="dropdown-item">
                                                                 <i class="fas fa-credit-card fa-sm fa-fw mr-2 text-success"></i>
-                                                                Lunasi Pembayaran
+                                                                Bayar Pelunasan
                                                             </a>
 
-                                                        <?php endif; ?>
-
-                                                        <?php if ($status == "lunas") : ?>
+                                                        <?php elseif ($status == "lunas") : ?>
 
                                                             <div class="dropdown-divider"></div>
 
@@ -476,7 +450,7 @@ function filterTable() {
     let input = document.getElementById("searchInput").value.toLowerCase();
     let table = document.getElementById("pesananTable");
 
-    if(!table){
+    if (!table) {
         return;
     }
 
@@ -487,6 +461,57 @@ function filterTable() {
         tr[i].style.display = text.includes(input) ? "" : "none";
     }
 }
+
+$(document).ready(function () {
+    $('.aksi-dropdown').on('show.bs.dropdown', function () {
+        let dropdown = $(this);
+        let button = dropdown.find('[data-toggle="dropdown"]');
+        let menu = dropdown.find('.dropdown-menu');
+
+        $('body').append(menu.detach());
+
+        let offset = button.offset();
+        let buttonHeight = button.outerHeight();
+        let menuWidth = menu.outerWidth();
+        let buttonWidth = button.outerWidth();
+        let windowWidth = $(window).width();
+
+        let left = offset.left + buttonWidth - menuWidth;
+        let top = offset.top + buttonHeight + 5;
+
+        if (left < 10) {
+            left = 10;
+        }
+
+        if ((left + menuWidth) > windowWidth) {
+            left = windowWidth - menuWidth - 10;
+        }
+
+        menu.css({
+            display: 'block',
+            position: 'absolute',
+            top: top,
+            left: left,
+            zIndex: 9999
+        });
+
+        dropdown.data('dropdown-menu', menu);
+    });
+
+    $('.aksi-dropdown').on('hide.bs.dropdown', function () {
+        let dropdown = $(this);
+        let menu = dropdown.data('dropdown-menu');
+
+        if (menu) {
+            menu.removeAttr('style');
+            dropdown.append(menu.detach());
+        }
+    });
+
+    $(window).on('resize scroll', function () {
+        $('.aksi-dropdown.show .dropdown-toggle').dropdown('hide');
+    });
+});
 </script>
 
 </body>

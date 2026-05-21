@@ -13,30 +13,10 @@ if (!isset($_POST['pesan'])) {
 }
 
 $id_user = $_SESSION['id_user'] ?? 0;
-
-function tambahKolomJikaBelumAda($koneksi, $tabel, $kolom, $sql)
-{
-    $cek = mysqli_query($koneksi, "SHOW COLUMNS FROM `$tabel` LIKE '$kolom'");
-    if ($cek && mysqli_num_rows($cek) == 0) {
-        mysqli_query($koneksi, $sql);
-    }
-}
-
-tambahKolomJikaBelumAda($koneksi, "pemesanan", "deadline_dp",
-    "ALTER TABLE pemesanan ADD deadline_dp DATE DEFAULT NULL"
-);
-
-tambahKolomJikaBelumAda($koneksi, "pemesanan", "foto_ktp",
-    "ALTER TABLE pemesanan ADD foto_ktp VARCHAR(255) DEFAULT NULL"
-);
-
-tambahKolomJikaBelumAda($koneksi, "pembayaran", "jenis_pembayaran",
-    "ALTER TABLE pembayaran ADD jenis_pembayaran VARCHAR(50) DEFAULT 'booking'"
-);
-
 $id_mobil = mysqli_real_escape_string($koneksi, $_POST['id_mobil'] ?? '');
 $metode_bayar = mysqli_real_escape_string($koneksi, $_POST['metode_bayar'] ?? '');
-$jumlah_bayar = 500000;
+
+$booking_fee = 500000;
 
 if (empty($id_mobil) || empty($metode_bayar)) {
     $_SESSION['error'] = "Data booking belum lengkap.";
@@ -44,7 +24,7 @@ if (empty($id_mobil) || empty($metode_bayar)) {
     exit;
 }
 
-if (!in_array($metode_bayar, ['cash', 'tunai', 'transfer'])) {
+if (!in_array($metode_bayar, ['tunai', 'transfer'])) {
     $_SESSION['error'] = "Metode bayar tidak valid.";
     header("Location: pesan_mobil.php?id=$id_mobil");
     exit;
@@ -80,24 +60,9 @@ if (!$qMobil || mysqli_num_rows($qMobil) == 0) {
 
 $mobil = mysqli_fetch_assoc($qMobil);
 
-if ($mobil['stok'] <= 0 || strtolower($mobil['status']) == 'terjual') {
-    $_SESSION['error'] = "Mobil tidak tersedia.";
+if ((int)$mobil['stok'] <= 0) {
+    $_SESSION['error'] = "Stok mobil habis.";
     header("Location: lihat_mobil.php");
-    exit;
-}
-
-$cekPesanan = mysqli_query($koneksi, "
-    SELECT id_pemesanan 
-    FROM pemesanan
-    WHERE id_pembeli='$id_pembeli'
-    AND id_mobil='$id_mobil'
-    AND status IN ('booking','dp','lunas')
-    LIMIT 1
-");
-
-if ($cekPesanan && mysqli_num_rows($cekPesanan) > 0) {
-    $_SESSION['error'] = "Kamu sudah punya pesanan aktif untuk mobil ini.";
-    header("Location: pesanan_saya.php");
     exit;
 }
 
@@ -118,15 +83,22 @@ function uploadFile($field, $prefix, $folderUpload)
     $size = $_FILES[$field]['size'];
 
     $ext = strtolower(pathinfo($nama, PATHINFO_EXTENSION));
-    $allowed = ['jpg','jpeg','png','webp'];
+    $allowed = ['jpg', 'jpeg', 'png', 'webp'];
 
-    if (!in_array($ext, $allowed)) return "FORMAT_SALAH";
-    if ($size > 2 * 1024 * 1024) return "UKURAN_BESAR";
+    if (!in_array($ext, $allowed)) {
+        return "FORMAT_SALAH";
+    }
+
+    if ($size > 2 * 1024 * 1024) {
+        return "UKURAN_BESAR";
+    }
 
     $namaBaru = $prefix . "_" . time() . "_" . rand(1000,9999) . "." . $ext;
     $path = $folderUpload . $namaBaru;
 
-    if (!move_uploaded_file($tmp, $path)) return "UPLOAD_GAGAL";
+    if (!move_uploaded_file($tmp, $path)) {
+        return "UPLOAD_GAGAL";
+    }
 
     return $namaBaru;
 }
@@ -145,8 +117,8 @@ if ($metode_bayar == "transfer") {
     $bukti_pembayaran = $uploadBukti;
 }
 
-$deadline_dp = date('Y-m-d', strtotime('+7 days'));
 $total_harga = (float)$mobil['harga'];
+$deadline_dp = date('Y-m-d', strtotime('+7 days'));
 
 mysqli_begin_transaction($koneksi);
 
@@ -192,38 +164,38 @@ $simpanPembayaran = mysqli_query($koneksi, "
     (
         '$id_pemesanan',
         '$metode_bayar',
-        '$jumlah_bayar',
+        '$booking_fee',
         'diterima',
         '$bukti_pembayaran',
         'booking'
     )
 ");
 
+if (!$simpanPembayaran) {
+    mysqli_rollback($koneksi);
+    die("Gagal simpan pembayaran: " . mysqli_error($koneksi));
+}
+
 $updateMobil = mysqli_query($koneksi, "
     UPDATE mobil SET
         stok = stok - 1,
         status = CASE 
             WHEN stok - 1 <= 0 THEN 'terjual'
-            ELSE status
+            ELSE 'tersedia'
         END
     WHERE id_mobil='$id_mobil'
 ");
 
-if ($simpanPembayaran && $updateMobil) {
-    mysqli_commit($koneksi);
-
-    echo "<script>
-        alert('Booking berhasil. Silakan lanjut DP atau pelunasan di menu Pesanan Saya.');
-        window.location='pesanan_saya.php';
-    </script>";
-    exit;
-} else {
+if (!$updateMobil) {
     mysqli_rollback($koneksi);
-
-    echo "<script>
-        alert('Gagal membuat booking!');
-        window.location='pesan_mobil.php?id=$id_mobil';
-    </script>";
-    exit;
+    die("Gagal update stok mobil: " . mysqli_error($koneksi));
 }
+
+mysqli_commit($koneksi);
+
+echo "<script>
+    alert('Booking berhasil. Status pesanan kamu sekarang Booking.');
+    window.location='pesanan_saya.php';
+</script>";
+exit;
 ?>

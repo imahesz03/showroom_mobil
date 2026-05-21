@@ -71,11 +71,4 @@ $page = basename($_SERVER['PHP_SELF']);
 
     <hr class="sidebar-divider">
 
-    <li class="nav-item">
-        <a class="nav-link" href="../auth/logout.php">
-            <i class="fas fa-fw fa-sign-out-alt"></i>
-            <span>Logout</span>
-        </a>
-    </li>
-
 </ul>
