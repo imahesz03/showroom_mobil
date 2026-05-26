@@ -35,7 +35,7 @@ $username = $_SESSION['username'] ?? 'Admin';
                 $fotoTopbar = $_SESSION['foto_profil'] ?? '';
 
                 if(!empty($fotoTopbar)){
-                    $srcFotoTopbar = "/showroom_mobil/uploads/" . $fotoTopbar;
+                    $srcFotoTopbar = "../uploads/" . $fotoTopbar;
                 } else {
                     $srcFotoTopbar = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
                 }
