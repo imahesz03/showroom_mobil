@@ -89,26 +89,50 @@ if(!$data){
 
     <link href="../assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
     <link href="../assets/css/sb-admin-2.min.css" rel="stylesheet">
-
+    <link href="../assets/css/admin.css" rel="stylesheet">
     <style>
-        .table td{
+        .table th{
+            font-size: 12px;
+            white-space: nowrap;
+            text-align: center;
             vertical-align: middle;
-            font-size: 14px;
         }
 
-        .table th{
-            font-size: 14px;
-            white-space: nowrap;
+        .table td{
+            font-size: 13px;
+            vertical-align: middle;
+        }
+
+        .table-responsive{
+            overflow-x: auto;
+        }
+
+        #tablePengiriman{
+            min-width: 1100px;
         }
 
         .badge{
-            font-size: 12px;
+            font-size: 11px;
             padding: 6px 9px;
         }
 
-        .small-text{
+        .main-text{
+            font-weight: 700;
+            color: #2f3542;
+        }
+
+        .muted-text{
             font-size: 12px;
             color: #858796;
+        }
+
+        .btn-icon{
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
     </style>
 </head>
@@ -131,24 +155,31 @@ if(!$data){
             <div class="container-fluid">
 
                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                    <h1 class="h3 mb-1 text-gray-800 font-weight-bold">Pengiriman Mobil</h1>
+                    <div>
+                        <h1 class="h3 mb-1 text-gray-800 font-weight-bold">Pengiriman Mobil</h1>
+                        <p class="mb-0 text-gray-600">Pelacakan distribusi armada unit terjual, penugasan kurir, dan berkas serah terima.</p>
+                    </div>
 
-                    <a href="tambah_pengiriman.php" class="btn btn-primary btn-sm">
-                        <i class="fas fa-plus"></i> Tambah Pengiriman
+                    <a href="tambah_pengiriman.php" class="btn btn-primary btn-sm shadow-sm">
+                        <i class="fas fa-plus mr-1"></i> Tambah Pengiriman
                     </a>
                 </div>
 
                 <?php if(isset($_SESSION['success'])){ ?>
-                    <div class="alert alert-success">
-                        <i class="fas fa-check-circle"></i>
-                        <?= $_SESSION['success']; unset($_SESSION['success']); ?>
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="fas fa-check-circle mr-1"></i> <?= $_SESSION['success']; unset($_SESSION['success']); ?>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                     </div>
                 <?php } ?>
 
                 <?php if(isset($_SESSION['error'])){ ?>
-                    <div class="alert alert-danger">
-                        <i class="fas fa-exclamation-circle"></i>
-                        <?= $_SESSION['error']; unset($_SESSION['error']); ?>
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="fas fa-exclamation-circle mr-1"></i> <?= $_SESSION['error']; unset($_SESSION['error']); ?>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                     </div>
                 <?php } ?>
 
@@ -156,7 +187,7 @@ if(!$data){
 
                     <div class="card-header py-3 d-flex justify-content-between align-items-center">
                         <h6 class="m-0 font-weight-bold text-primary">
-                            Monitoring Pengiriman Mobil
+                            <i class="fas fa-truck mr-2"></i>Monitoring Logistik Showroom
                         </h6>
 
                         <input type="text"
@@ -171,18 +202,18 @@ if(!$data){
 
                         <div class="table-responsive">
 
-                            <table class="table table-bordered table-hover text-center" id="tablePengiriman">
+                            <table class="table table-bordered table-hover" id="tablePengiriman">
 
                                 <thead class="thead-light">
                                     <tr>
-                                        <th>No</th>
-                                        <th>Pembeli</th>
-                                        <th>Mobil</th>
-                                        <th>Kurir</th>
-                                        <th>Alamat Kirim</th>
-                                        <th>Status</th>
-                                        <th>Bukti</th>
-                                        <th>Surat Jalan</th>
+                                        <th width="40">No</th>
+                                        <th width="180">Penerima / Pembeli</th>
+                                        <th width="160">Spesifikasi Unit</th>
+                                        <th width="160">Petugas Kurir</th>
+                                        <th>Destinasi Pengiriman</th>
+                                        <th width="160">Status Logistik</th>
+                                        <th width="110">Dokumen</th>
+                                        <th width="120">Pilihan Aksi</th>
                                     </tr>
                                 </thead>
 
@@ -196,77 +227,101 @@ if(!$data){
 
                                             if($row['status'] == 'diproses'){
                                                 $badge = 'warning';
-                                                $textStatus = 'Diproses';
+                                                $textStatus = 'DIPROSES';
+                                                $iconStatus = 'fa-clock';
                                             } elseif($row['status'] == 'dikirim'){
                                                 $badge = 'info';
-                                                $textStatus = 'Dikirim';
+                                                $textStatus = 'DIKIRIM';
+                                                $iconStatus = 'fa-truck-moving';
                                             } elseif($row['status'] == 'terkirim' || $row['status'] == 'selesai'){
                                                 $badge = 'success';
-                                                $textStatus = 'Telah Terkirim';
+                                                $textStatus = 'TERKIRIM';
+                                                $iconStatus = 'fa-check-circle';
                                             } else {
                                                 $badge = 'secondary';
                                                 $textStatus = '-';
+                                                $iconStatus = 'fa-question-circle';
                                             }
                                         ?>
 
                                         <tr>
-                                            <td><?= $no++; ?></td>
+                                            <td class="text-center font-weight-bold text-gray-700"><?= $no++; ?></td>
 
                                             <td>
-                                                <strong><?= htmlspecialchars($row['nama_pembeli']); ?></strong><br>
-                                                <small class="small-text">
-                                                    <?= htmlspecialchars($row['no_hp_pembeli']); ?>
-                                                </small>
+                                                <div class="main-text"><?= htmlspecialchars($row['nama_pembeli']); ?></div>
+                                                <div class="muted-text font-weight-bold text-primary">
+                                                    <i class="fab fa-whatsapp mr-1"></i><?= htmlspecialchars($row['no_hp_pembeli']); ?>
+                                                </div>
                                             </td>
 
                                             <td>
-                                                <strong><?= htmlspecialchars($row['nama_mobil']); ?></strong><br>
-                                                <small class="small-text">
-                                                    Tahun <?= htmlspecialchars($row['tahun']); ?>
-                                                </small>
+                                                <div class="main-text"><?= htmlspecialchars($row['nama_mobil']); ?></div>
+                                                <div class="muted-text font-weight-bold text-gray-700">Tahun <?= htmlspecialchars($row['tahun']); ?></div>
                                             </td>
 
                                             <td>
-                                                <strong><?= htmlspecialchars($row['nama_kurir'] ?? '-'); ?></strong><br>
-                                                <small class="small-text">
-                                                    <?= htmlspecialchars($row['no_hp_kurir'] ?? '-'); ?>
-                                                </small>
-                                            </td>
-
-                                            <td>
-                                                <?= htmlspecialchars($row['alamat_kirim']); ?>
-                                            </td>
-
-                                            <td>
-                                                <span class="badge badge-<?= $badge; ?>">
-                                                    <?= $textStatus; ?>
-                                                </span>
-
-                                                <?php if(!empty($row['tanggal_terkirim'])){ ?>
-                                                    <br>
-                                                    <small class="small-text">
-                                                        <?= date('d-m-Y H:i', strtotime($row['tanggal_terkirim'])); ?>
-                                                    </small>
+                                                <?php if(!empty($row['nama_kurir'])){ ?>
+                                                    <div class="main-text"><?= htmlspecialchars($row['nama_kurir']); ?></div>
+                                                    <div class="muted-text text-xs text-gray-600">
+                                                        <i class="fas fa-phone-alt mr-1"></i><?= htmlspecialchars($row['no_hp_kurir']); ?>
+                                                    </div>
+                                                <?php } else { ?>
+                                                    <span class="badge badge-light text-muted border"><i class="fas fa-user-times mr-1"></i>Belum Ada</span>
                                                 <?php } ?>
                                             </td>
 
                                             <td>
+                                                <div class="text-dark font-weight-normal text-left" style="line-height: 1.4;">
+                                                    <i class="fas fa-map-marker-alt text-danger mr-1"></i><?= htmlspecialchars($row['alamat_kirim']); ?>
+                                                </div>
+                                            </td>
+
+                                            <td class="text-center">
+                                                <div class="mb-1">
+                                                    <span class="badge badge-<?= $badge; ?> btn-block text-xs">
+                                                        <i class="fas <?= $iconStatus; ?> mr-1"></i><?= $textStatus; ?>
+                                                    </span>
+                                                </div>
+                                                
+                                                <?php if(!empty($row['tanggal_terkirim'])){ ?>
+                                                    <div class="muted-text text-xs text-success font-weight-bold mt-1">
+                                                        Tiba: <?= date('d/m/Y H:i', strtotime($row['tanggal_terkirim'])); ?>
+                                                    </div>
+                                                <?php } else { ?>
+                                                    <div class="muted-text text-xs text-gray-500 mt-1">Dalam Pemantauan</div>
+                                                <?php } ?>
+                                            </td>
+
+                                            <td class="text-center">
                                                 <?php if(!empty($row['bukti_pengiriman'])){ ?>
                                                     <a href="../uploads/<?= htmlspecialchars($row['bukti_pengiriman']); ?>"
                                                        target="_blank"
-                                                       class="btn btn-sm btn-primary">
-                                                        <i class="fas fa-eye"></i> Lihat
+                                                       class="badge badge-light border text-primary btn-block text-xs py-1.5"
+                                                       title="Klik untuk melihat lampiran foto penyerahan">
+                                                        <i class="fas fa-images mr-1"></i> Foto Serah
                                                     </a>
                                                 <?php } else { ?>
-                                                    -
+                                                    <span class="badge badge-light border text-muted btn-block text-xs py-1.5">
+                                                        <i class="fas fa-times mr-1"></i> Belum Upload
+                                                    </span>
                                                 <?php } ?>
                                             </td>
 
-                                            <td>
-                                                <a href="pengiriman_mobil.php?surat_jalan=<?= $row['id_pengiriman']; ?>"
-                                                   class="btn btn-sm btn-success">
-                                                    <i class="fas fa-print"></i> Cetak
-                                                </a>
+                                            <td class="text-center">
+                                                <div class="d-flex justify-content-center align-items-center style-gap" style="gap: 4px;">
+                                                    <a href="pengiriman_mobil.php?surat_jalan=<?= $row['id_pengiriman']; ?>"
+                                                       class="btn btn-sm btn-success btn-icon"
+                                                       title="Cetak Berkas Surat Jalan Kendaraan">
+                                                        <i class="fas fa-print"></i>
+                                                    </a>
+
+                                                    <a href="pengiriman_mobil.php?hapus=<?= $row['id_pengiriman']; ?>"
+                                                       class="btn btn-sm btn-danger btn-icon"
+                                                       title="Hapus Data Pengiriman"
+                                                       onclick="return confirm('Apakah Anda yakin ingin menghapus data pengiriman dan surat jalan terkait ini?')">
+                                                        <i class="fas fa-trash-alt"></i>
+                                                    </a>
+                                                </div>
                                             </td>
                                         </tr>
 
@@ -275,8 +330,9 @@ if(!$data){
                                     <?php } else { ?>
 
                                         <tr>
-                                            <td colspan="9" class="text-center text-muted py-4">
-                                                Belum ada data pengiriman.
+                                            <td colspan="8" class="text-center text-muted py-5">
+                                                <i class="fas fa-shipping-fast fa-2x text-gray-300 mb-2 d-block"></i>
+                                                Belum ada arsip logistik pengiriman mobil yang aktif saat ini.
                                             </td>
                                         </tr>
 
@@ -311,7 +367,10 @@ function filterTable(){
     let rows = document.querySelectorAll("#tablePengiriman tbody tr");
 
     rows.forEach(row => {
-        row.style.display = row.innerText.toLowerCase().includes(input) ? "" : "none";
+        // Cek baris kosong agar tidak ikut tersembunyi jika data kosong
+        if(row.cells.length > 1){
+            row.style.display = row.innerText.toLowerCase().includes(input) ? "" : "none";
+        }
     });
 }
 </script>

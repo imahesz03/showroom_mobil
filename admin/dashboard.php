@@ -65,6 +65,8 @@ $queryTransaksi = mysqli_query($koneksi, "
     
     <link href="../assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
     <link href="../assets/css/sb-admin-2.min.css" rel="stylesheet">
+    <link href="../assets/css/admin.css" rel="stylesheet">
+
 </head>
 
 <body id="page-top">
@@ -81,7 +83,7 @@ $queryTransaksi = mysqli_query($koneksi, "
 
             <div class="container-fluid">
 
-                <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                <div class="dashboard-header d-sm-flex align-items-center justify-content-between mb-4">
                     <div>
                         <h1 class="h3 mb-1 text-gray-800 font-weight-bold">Dashboard Admin</h1>
                         <p class="mb-0 text-gray-600">
@@ -92,8 +94,8 @@ $queryTransaksi = mysqli_query($koneksi, "
 
                     <div class="d-none d-sm-inline-block">
                         <span id="jamRealtime" class="btn btn-sm btn-primary shadow-sm">
-                        <i class="fas fa-calendar-alt fa-sm text-white-50 mr-1"></i>
-                        <?= date('d F Y  |  H:i:s'); ?> WIB
+                            <i class="fas fa-calendar-alt fa-sm text-white-50 mr-1"></i>
+                            <?= date('d F Y  |  H:i:s'); ?> WIB
                         </span>
                     </div>
                 </div>
@@ -101,7 +103,7 @@ $queryTransaksi = mysqli_query($koneksi, "
                 <div class="row">
 
                     <div class="col-xl-3 col-md-6 mb-4">
-                        <div class="card border-left-primary shadow h-100 py-2">
+                        <div class="card stat-card border-left-primary h-100 py-2">
                             <div class="card-body">
                                 <div class="row no-gutters align-items-center">
                                     <div class="col mr-2">
@@ -113,7 +115,9 @@ $queryTransaksi = mysqli_query($koneksi, "
                                         </div>
                                     </div>
                                     <div class="col-auto">
-                                        <i class="fas fa-car fa-2x text-gray-300"></i>
+                                        <div class="stat-icon icon-primary">
+                                            <i class="fas fa-car"></i>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -121,7 +125,7 @@ $queryTransaksi = mysqli_query($koneksi, "
                     </div>
 
                     <div class="col-xl-3 col-md-6 mb-4">
-                        <div class="card border-left-success shadow h-100 py-2">
+                        <div class="card stat-card border-left-success h-100 py-2">
                             <div class="card-body">
                                 <div class="row no-gutters align-items-center">
                                     <div class="col mr-2">
@@ -133,7 +137,9 @@ $queryTransaksi = mysqli_query($koneksi, "
                                         </div>
                                     </div>
                                     <div class="col-auto">
-                                        <i class="fas fa-users fa-2x text-gray-300"></i>
+                                        <div class="stat-icon icon-success">
+                                            <i class="fas fa-users"></i>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -141,7 +147,7 @@ $queryTransaksi = mysqli_query($koneksi, "
                     </div>
 
                     <div class="col-xl-3 col-md-6 mb-4">
-                        <div class="card border-left-warning shadow h-100 py-2">
+                        <div class="card stat-card border-left-warning h-100 py-2">
                             <div class="card-body">
                                 <div class="row no-gutters align-items-center">
                                     <div class="col mr-2">
@@ -153,7 +159,9 @@ $queryTransaksi = mysqli_query($koneksi, "
                                         </div>
                                     </div>
                                     <div class="col-auto">
-                                        <i class="fas fa-shopping-cart fa-2x text-gray-300"></i>
+                                        <div class="stat-icon icon-warning">
+                                            <i class="fas fa-shopping-cart"></i>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -161,7 +169,7 @@ $queryTransaksi = mysqli_query($koneksi, "
                     </div>
 
                     <div class="col-xl-3 col-md-6 mb-4">
-                        <div class="card border-left-info shadow h-100 py-2">
+                        <div class="card stat-card border-left-info h-100 py-2">
                             <div class="card-body">
                                 <div class="row no-gutters align-items-center">
                                     <div class="col mr-2">
@@ -173,7 +181,9 @@ $queryTransaksi = mysqli_query($koneksi, "
                                         </div>
                                     </div>
                                     <div class="col-auto">
-                                        <i class="fas fa-handshake fa-2x text-gray-300"></i>
+                                        <div class="stat-icon icon-info">
+                                            <i class="fas fa-handshake"></i>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -185,7 +195,7 @@ $queryTransaksi = mysqli_query($koneksi, "
                 <div class="row">
 
                     <div class="col-lg-8 mb-4">
-                        <div class="card shadow">
+                        <div class="card">
                             <div class="card-header py-3 d-flex align-items-center justify-content-between">
                                 <h6 class="m-0 font-weight-bold text-primary">
                                     Diagram Data Showroom
@@ -201,7 +211,7 @@ $queryTransaksi = mysqli_query($koneksi, "
                     </div>
 
                     <div class="col-lg-4 mb-4">
-                        <div class="card shadow">
+                        <div class="card">
                             <div class="card-header py-3 d-flex align-items-center justify-content-between">
                                 <h6 class="m-0 font-weight-bold text-primary">
                                     Status Mobil
@@ -214,11 +224,11 @@ $queryTransaksi = mysqli_query($koneksi, "
                                 </div>
 
                                 <div class="mt-4 small">
-                                    <p class="mb-1">
+                                    <p class="mb-2">
                                         <i class="fas fa-circle text-success"></i>
                                         Tersedia: <?= $mobilTersedia; ?>
                                     </p>
-                                    <p class="mb-1">
+                                    <p class="mb-2">
                                         <i class="fas fa-circle text-warning"></i>
                                         Dipesan: <?= $mobilDipesan; ?>
                                     </p>
@@ -236,7 +246,7 @@ $queryTransaksi = mysqli_query($koneksi, "
                 <div class="row">
 
                     <div class="col-lg-5 mb-4">
-                        <div class="card shadow">
+                        <div class="card">
                             <div class="card-header py-3">
                                 <h6 class="m-0 font-weight-bold text-primary">
                                     Status Pemesanan
@@ -278,7 +288,7 @@ $queryTransaksi = mysqli_query($koneksi, "
                     </div>
 
                     <div class="col-lg-7 mb-4">
-                        <div class="card shadow">
+                        <div class="card">
                             <div class="card-header py-3 d-flex align-items-center justify-content-between">
                                 <h6 class="m-0 font-weight-bold text-primary">
                                     Transaksi Terbaru
@@ -290,7 +300,7 @@ $queryTransaksi = mysqli_query($koneksi, "
                             <div class="card-body">
                                 <div class="table-responsive">
                                     <table class="table table-bordered table-hover mb-0">
-                                        <thead class="thead-light">
+                                        <thead>
                                             <tr>
                                                 <th>No</th>
                                                 <th>Tanggal</th>
@@ -344,13 +354,13 @@ $queryTransaksi = mysqli_query($koneksi, "
                 <div class="row">
 
                     <div class="col-lg-12 mb-4">
-                        <div class="card shadow">
+                        <div class="card">
                             <div class="card-header py-3">
                                 <h6 class="m-0 font-weight-bold text-primary">
                                     Akses Cepat Admin
                                 </h6>
                             </div>
-                            <div class="card-body">
+                            <div class="card-body quick-actions">
 
                                 <a href="../admin/data_mobil_admin.php" class="btn btn-primary btn-icon-split mb-2 mr-2">
                                     <span class="icon text-white-50">
@@ -477,6 +487,7 @@ new Chart(ctxPie, {
     }
 });
 </script>
+
 <script>
 function updateJam() {
 
@@ -497,12 +508,13 @@ function updateJam() {
     let detik = String(sekarang.getSeconds()).padStart(2, '0');
 
     document.getElementById("jamRealtime").innerHTML =
-        `${tanggal} ${namaBulan} ${tahun} | ${jam}:${menit}:${detik} WIB`;
+        `<i class="fas fa-calendar-alt fa-sm text-white-50 mr-1"></i> ${tanggal} ${namaBulan} ${tahun} | ${jam}:${menit}:${detik} WIB`;
 }
 
 setInterval(updateJam, 1000);
 
 updateJam();
 </script>
+
 </body>
 </html>

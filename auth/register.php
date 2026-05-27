@@ -10,6 +10,7 @@ session_start();
 
     <link href="../assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
     <link href="../assets/css/sb-admin-2.min.css" rel="stylesheet">
+    
 
     <style>
         .register-left{

@@ -27,6 +27,7 @@ $queryMobil = mysqli_query($koneksi, "
 
     <link href="../assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
     <link href="../assets/css/sb-admin-2.min.css" rel="stylesheet">
+    <link href="../assets/css/admin.css" rel="stylesheet">
 </head>
 
 <body id="page-top">
@@ -93,21 +94,21 @@ $queryMobil = mysqli_query($koneksi, "
                                                  style="height:210px; object-fit:cover; border-top-left-radius:.35rem; border-top-right-radius:.35rem;">
 
                                             <div class="card-body">
-
-                                                <div class="d-flex justify-content-between align-items-start mb-2">
-                                                    <h5 class="font-weight-bold text-gray-800 mb-0">
-                                                        <?= htmlspecialchars($mobil['nama_mobil']); ?>
-                                                    </h5>
-
                                                     <?php if ($tersedia) : ?>
-                                                        <span class="badge badge-success px-3 py-2">
+                                                        <span class="badge badge-success px-3 py-2 mb-2">
                                                             Tersedia
                                                         </span>
                                                     <?php else : ?>
-                                                        <span class="badge badge-danger px-3 py-2">
+                                                        <span class="badge badge-danger px-6 py-2 mb-2">
                                                             Tidak Tersedia
                                                         </span>
                                                     <?php endif; ?>
+                                                <div class="d-flex center-content-between align-items-start mb-2"><br>
+                                                    <h5 class="font-weight-bold text-gray-800 mb-0">
+                                                        <?= htmlspecialchars($mobil['nama_mobil']); ?>
+                                                    </h5>
+                                                    <br>
+
                                                 </div>
 
                                                 <div class="text-primary font-weight-bold mb-2">
@@ -167,7 +168,7 @@ $queryMobil = mysqli_query($koneksi, "
                                                         <div class="col-6 pl-1">
                                                             <button class="btn btn-secondary btn-block" disabled>
                                                                 <i class="fas fa-ban mr-1"></i>
-                                                                Habis
+                                                                Sold Out
                                                             </button>
                                                         </div>
                                                     </div>

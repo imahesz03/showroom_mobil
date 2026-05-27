@@ -81,16 +81,16 @@ else{
     $text = "Selamat datang ".$user['username'];
 
     if($role == "admin"){
-        $redirect = "../dashboard/admin.php";
+        $redirect = "../admin/dashboard.php";
 
     } elseif($role == "pembeli"){
-        $redirect = "../dashboard/pembeli.php";
+        $redirect = "../pembeli/dashboard.php";
 
     } elseif($role == "penjual"){
-        $redirect = "../dashboard/penjual.php";
+        $redirect = "../penjual/dashboard.php";
 
     } elseif($role == "kurir"){
-        $redirect = "../dashboard/kurir.php";
+        $redirect = "../kurir/dashboard.php";
 
     } else {
 

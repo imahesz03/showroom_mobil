@@ -7,6 +7,9 @@ if(!isset($_SESSION['role']) || $_SESSION['role'] != "penjual"){
     exit;
 }
 
+// Menangkap ID mobil dari URL jika ada
+$id_terpilih = isset($_GET['id_mobil']) ? $_GET['id_mobil'] : '';
+
 /*
 |------------------------------------------------------
 | MOBIL YANG BELUM PERNAH DITAWARKAN
@@ -19,7 +22,8 @@ $mobil = mysqli_query($koneksi, "
         m.tahun,
         m.harga
     FROM mobil m
-    WHERE NOT EXISTS (
+    WHERE m.id_penjual = (SELECT id_penjual FROM penjual WHERE id_user = '{$_SESSION['id_user']}')
+    AND NOT EXISTS (
         SELECT 1 
         FROM penawaran p 
         WHERE p.id_mobil = m.id_mobil
@@ -40,6 +44,7 @@ if(!$mobil){
 
     <link href="../assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
     <link href="../assets/css/sb-admin-2.min.css" rel="stylesheet">
+    <link href="../assets/css/admin.css" rel="stylesheet">
 </head>
 
 <body id="page-top">
@@ -94,7 +99,7 @@ if(!$mobil){
                                     <?php if(mysqli_num_rows($mobil) > 0){ ?>
 
                                         <?php while($m = mysqli_fetch_assoc($mobil)){ ?>
-                                            <option value="<?= $m['id_mobil']; ?>">
+                                            <option value="<?= $m['id_mobil']; ?>" <?= ($id_terpilih == $m['id_mobil']) ? 'selected' : ''; ?>>
                                                 <?= htmlspecialchars($m['nama_mobil']); ?> -
                                                 <?= htmlspecialchars($m['tahun']); ?> |
                                                 Rp <?= number_format($m['harga'], 0, ',', '.'); ?>
@@ -104,7 +109,7 @@ if(!$mobil){
                                     <?php } else { ?>
 
                                         <option value="" disabled>
-                                            Semua mobil sudah pernah ditawarkan
+                                            Semua mobil sudah pernah ditawarkan atau tidak tersedia
                                         </option>
 
                                     <?php } ?>

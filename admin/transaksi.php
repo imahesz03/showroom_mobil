@@ -2,42 +2,96 @@
 session_start();
 include "../config/koneksi.php";
 
-if(!isset($_SESSION['role']) || $_SESSION['role'] != "admin"){
+if (!isset($_SESSION['role']) || $_SESSION['role'] != "admin") {
     header("Location: ../auth/login.php");
     exit;
 }
 
-$query = mysqli_query($koneksi,
-"SELECT 
-    p.id_pemesanan,
-    p.tanggal_pesan,
-    p.total_harga,
-    p.status AS status_pemesanan,
+function rupiah($angka)
+{
+    return "Rp " . number_format((float)$angka, 0, ',', '.');
+}
 
-    m.nama_mobil,
-    b.nama AS nama_pembeli,
+function cekKolom($koneksi, $tabel, $kolom)
+{
+    $q = mysqli_query($koneksi, "SHOW COLUMNS FROM `$tabel` LIKE '$kolom'");
+    return ($q && mysqli_num_rows($q) > 0);
+}
 
-    py.metode_bayar,
-    py.bukti_pembayaran
+$kolomJenis = cekKolom($koneksi, "pembayaran", "jenis_pembayaran")
+    ? "pembayaran.jenis_pembayaran"
+    : "'booking'";
 
-FROM pemesanan p
-JOIN mobil m ON p.id_mobil = m.id_mobil
-JOIN pembeli b ON p.id_pembeli = b.id_pembeli
-LEFT JOIN pembayaran py ON p.id_pemesanan = py.id_pemesanan
-ORDER BY p.id_pemesanan DESC");
+$data = mysqli_query($koneksi, "
+    SELECT 
+        pemesanan.id_pemesanan,
+        pemesanan.tanggal_pesan,
+        pemesanan.total_harga,
+        pemesanan.status AS status_pesanan,
+
+        pembeli.nama AS nama_pembeli,
+
+        mobil.nama_mobil,
+
+        COALESCE(SUM(pembayaran.jumlah), 0) AS total_bayar,
+
+        MAX(CASE 
+            WHEN $kolomJenis = 'booking' THEN 1 
+            ELSE 0 
+        END) AS sudah_booking,
+
+        MAX(CASE 
+            WHEN $kolomJenis = 'dp' THEN 1 
+            ELSE 0 
+        END) AS sudah_dp,
+
+        MAX(CASE 
+            WHEN $kolomJenis = 'pelunasan' THEN 1 
+            ELSE 0 
+        END) AS sudah_pelunasan,
+
+        MAX(CASE 
+            WHEN pembayaran.bukti_pembayaran IS NOT NULL
+            AND pembayaran.bukti_pembayaran != '-'
+            THEN pembayaran.bukti_pembayaran
+            ELSE NULL
+        END) AS bukti_pembayaran
+
+    FROM pemesanan
+
+    JOIN pembeli 
+    ON pemesanan.id_pembeli = pembeli.id_pembeli
+
+    JOIN mobil 
+    ON pemesanan.id_mobil = mobil.id_mobil
+
+    LEFT JOIN pembayaran 
+    ON pemesanan.id_pemesanan = pembayaran.id_pemesanan
+
+    GROUP BY pemesanan.id_pemesanan
+
+    ORDER BY pemesanan.id_pemesanan DESC
+");
+
+if (!$data) {
+    die("Query transaksi error: " . mysqli_error($koneksi));
+}
 ?>
 
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
-    <title>Transaksi Admin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transaksi Admin - Galaxy Showroom</title>
 
     <link href="../assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
     <link href="../assets/css/sb-admin-2.min.css" rel="stylesheet">
+    <link href="../assets/css/admin.css" rel="stylesheet">
 </head>
 
-<body id="page-top">
+<body id="page-top" class="role-admin page-table">
 
 <div id="wrapper">
 
@@ -54,155 +108,219 @@ ORDER BY p.id_pemesanan DESC");
 
             <div class="container-fluid">
 
-            <div>
-                <h1 class="h3 mb-1 text-gray-800 font-weight-bold">Transaksi</h1>
-                <p class="mb-0 text-gray-600">
-                    Kelola transaksi pembelian, pembayaran, dan status pemesanan mobil.
-                </p>
-            </div> <br>
+                <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                    <div>
+                        <h1 class="h3 mb-1 text-gray-800 font-weight-bold tracking-tight">Transaksi</h1>
+                        <p class="mb-0 text-muted small">
+                            Ringkasan transaksi pemesanan dan riwayat pembayaran masuk dari pembeli.
+                        </p>
+                    </div>
+                </div>
 
-                <div class="card shadow mb-4">
+                <div class="card shadow border-0 mb-4 rounded-lg">
 
-                    <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                        <h6 class="m-0 font-weight-bold text-primary">
-                            Data Transaksi
-                        </h6>
+                    <div class="card-header bg-white border-bottom py-3 d-flex flex-column flex-md-row align-items-md-center justify-content-between">
+                        <div class="d-flex align-items-center mb-3 mb-md-0">
+                            <div class="bg-light p-2 rounded mr-3">
+                                <i class="fas fa-receipt text-primary"></i>
+                            </div>
+                            <div>
+                                <h6 class="m-0 font-weight-bold text-gray-800">Data Transaksi</h6>
+                                <p class="m-0 text-muted small">Kelola data pemesanan, bukti transfer, dan kwitansi</p>
+                            </div>
+                        </div>
 
-                        <input type="text"
-                               id="searchInput"
-                               class="form-control form-control-sm"
-                               style="max-width: 300px;"
-                               placeholder="Cari nama pembeli..."
-                               onkeyup="filterTable()">
+                        <div class="input-group shadow-sm" style="max-width: 340px;">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text bg-light border-right-0 text-muted">
+                                    <i class="fas fa-search"></i>
+                                </span>
+                            </div>
+                            <input type="text"
+                                   id="searchInput"
+                                   class="form-control bg-light border-left-0 text-sm"
+                                   placeholder="Cari pembeli, mobil, status..."
+                                   onkeyup="filterTable()">
+                        </div>
                     </div>
 
-                    <div class="card-body">
+                    <div class="card-body p-4">
 
-                        <div class="table-responsive">
-                            <table class="table table-bordered table-hover text-center" id="tableTransaksi" width="100%" cellspacing="0">
-                                <thead class="thead-light">
-                                    <tr>
-                                        <th>No</th>
-                                        <th>Pembeli</th>
-                                        <th>Mobil</th>
-                                        <th>Tanggal</th>
-                                        <th>Total</th>
-                                        <th>Metode</th>
-                                        <th>Bukti</th>
-                                        <th>Status Pesanan</th>
-                                        <th>Aksi</th>
-                                    </tr>
-                                </thead>
+                        <?php if (mysqli_num_rows($data) > 0) : ?>
 
-                                <tbody>
-                                    <?php
+                            <div class="table-responsive">
+
+                                <table class="table table-bordered table-hover mb-0" id="transaksiTable" width="100%" cellspacing="0">
+
+                                    <thead class="bg-light text-dark text-uppercase small font-weight-bold">
+                                        <tr>
+                                            <th class="text-center py-3" style="width: 5%;">No</th>
+                                            <th class="py-3" style="width: 25%;">Pembeli</th>
+                                            <th class="py-3" style="width: 25%;">Mobil</th>
+                                            <th class="text-center py-3" style="width: 20%;">Tahap Pembayaran</th>
+                                            <th class="text-center py-3" style="width: 13%;">Status</th>
+                                            <th class="text-center py-3" style="width: 12%;">Aksi</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody class="text-gray-700">
+
+                                    <?php 
                                     $no = 1;
-                                    while($row = mysqli_fetch_assoc($query)){
+                                    while ($row = mysqli_fetch_assoc($data)) : 
 
-                                        $status = $row['status_pemesanan'];
+                                        $status = strtolower($row['status_pesanan'] ?? '-');
+                                        $badgeStatus = "secondary";
+                                        $textStatus = ucfirst($status);
 
-                                        if($status == "lunas"){
-                                            $badge = "success";
-                                        } elseif($status == "booking"){
-                                            $badge = "warning";
-                                        } elseif($status == "dp"){
-                                            $badge = "info";
-                                        } elseif($status == "batal"){
-                                            $badge = "danger";
-                                        } else {
-                                            $badge = "secondary";
+                                        if ($status == "booking") {
+                                            $badgeStatus = "warning";
+                                            $textStatus = "Booking";
+                                        } elseif ($status == "dp") {
+                                            $badgeStatus = "info";
+                                            $textStatus = "DP";
+                                        } elseif ($status == "lunas") {
+                                            $badgeStatus = "success";
+                                            $textStatus = "Lunas";
+                                        } elseif ($status == "batal") {
+                                            $badgeStatus = "danger";
+                                            $textStatus = "Batal";
                                         }
 
-                                        if($row['metode_bayar'] == "transfer"){
-                                            $metode = "Transfer";
-                                        } else {
-                                            $metode = "Cash";
-                                        }
+                                        $totalHarga = (float)$row['total_harga'];
+                                        $totalBayar = (float)$row['total_bayar'];
                                     ?>
 
-                                    <tr>
-                                        <td><?= $no++; ?></td>
+                                        <tr class="align-middle">
+                                            <td class="text-center align-middle font-weight-bold text-muted">
+                                                <?= $no++; ?>
+                                            </td>
 
-                                        <td><?= htmlspecialchars($row['nama_pembeli']); ?></td>
+                                            <td class="align-middle">
+                                                <div class="font-weight-bold text-gray-800 mb-0">
+                                                    <?= htmlspecialchars($row['nama_pembeli'] ?? '-'); ?>
+                                                </div>
+                                                <small class="text-muted d-block">
+                                                    <i class="far fa-clock mr-1"></i><?= date('d M Y H:i', strtotime($row['tanggal_pesan'])); ?>
+                                                </small>
+                                            </td>
 
-                                        <td><?= htmlspecialchars($row['nama_mobil']); ?></td>
+                                            <td class="align-middle">
+                                                <div class="font-weight-bold text-gray-800 mb-0">
+                                                    <?= htmlspecialchars($row['nama_mobil'] ?? '-'); ?>
+                                                </div>
+                                                <div class="small text-primary font-weight-bold">
+                                                    <?= rupiah($totalHarga); ?>
+                                                </div>
+                                            </td>
 
-                                        <td>
-                                            <?= date('d-m-Y H:i', strtotime($row['tanggal_pesan'])); ?>
-                                        </td>
+                                            <td class="align-middle text-center">
+                                                <div class="mb-1">
+                                                    <?php if ($row['sudah_booking']) : ?>
+                                                        <span class="badge badge-pill badge-warning px-2 py-1 font-weight-bold small text-uppercase" style="font-size: 70%;">Booking</span>
+                                                    <?php endif; ?>
 
-                                        <td>
-                                            Rp <?= number_format($row['total_harga'], 0, ',', '.'); ?>
-                                        </td>
+                                                    <?php if ($row['sudah_dp']) : ?>
+                                                        <span class="badge badge-pill badge-info px-2 py-1 font-weight-bold small text-uppercase" style="font-size: 70%;">DP</span>
+                                                    <?php endif; ?>
 
-                                        <td><?= $metode; ?></td>
+                                                    <?php if ($row['sudah_pelunasan']) : ?>
+                                                        <span class="badge badge-pill badge-success px-2 py-1 font-weight-bold small text-uppercase" style="font-size: 70%;">Lunas</span>
+                                                    <?php endif; ?>
 
-                                        <td>
-                                            <?php if($row['metode_bayar'] == "transfer"){ ?>
+                                                    <?php if (!$row['sudah_booking'] && !$row['sudah_dp'] && !$row['sudah_pelunasan']) : ?>
+                                                        <span class="badge badge-pill badge-secondary px-2 py-1 font-weight-bold small text-uppercase" style="font-size: 70%;">Belum Bayar</span>
+                                                    <?php endif; ?>
+                                                </div>
 
-                                                <?php if(!empty($row['bukti_pembayaran'])){ ?>
-                                                    <a href="../uploads/<?= htmlspecialchars($row['bukti_pembayaran']); ?>"
-                                                       target="_blank"
-                                                       class="btn btn-sm btn-primary">
-                                                        <i class="fas fa-eye"></i> Lihat
-                                                    </a>
-                                                <?php } else { ?>
-                                                    <span class="text-danger">Belum Upload</span>
-                                                <?php } ?>
+                                                <small class="text-muted d-block">
+                                                    Total Bayar: <span class="text-success font-weight-bold"><?= rupiah($totalBayar); ?></span>
+                                                </small>
+                                            </td>
 
-                                            <?php } else { ?>
-                                                -
-                                            <?php } ?>
-                                        </td>
-
-                                        <td>
-                                            <span class="badge badge-<?= $badge; ?>">
-                                                <?= ucfirst($status); ?>
-                                            </span>
-                                        </td>
-
-                                        <td>
-                                            <?php if($status == "booking"){ ?>
-
-                                                <span class="badge badge-warning mb-2">
-                                                    Booking
+                                            <td class="text-center align-middle">
+                                                <span class="badge badge-pill badge-<?= $badgeStatus; ?> px-3 py-2 font-weight-bold text-uppercase" style="font-size: 75%;">
+                                                    <?= $textStatus; ?>
                                                 </span>
+                                            </td>
 
-                                            <?php } elseif($status == "dp"){ ?>
+                                            <td class="text-center align-middle">
+                                                <div class="dropdown">
+                                                    <button class="btn btn-white border text-gray-800 btn-sm dropdown-toggle shadow-sm px-3 font-weight-bold"
+                                                            type="button"
+                                                            id="dropdownAksi<?= $row['id_pemesanan']; ?>"
+                                                            data-toggle="dropdown"
+                                                            aria-haspopup="true"
+                                                            aria-expanded="false">
+                                                        Aksi
+                                                    </button>
 
-                                                <span class="badge badge-info mb-2">
-                                                    DP
-                                                </span>
+                                                    <div class="dropdown-menu dropdown-menu-right shadow border-0 rounded-lg"
+                                                         aria-labelledby="dropdownAksi<?= $row['id_pemesanan']; ?>">
 
-                                            <?php } elseif($status == "lunas"){ ?>
+                                                        <a href="detail_transaksi.php?id=<?= $row['id_pemesanan']; ?>"
+                                                           class="dropdown-item py-2 text-sm">
+                                                            <i class="fas fa-eye fa-sm fa-fw mr-2 text-info"></i> Detail
+                                                        </a>
 
-                                                <a href="kwitansi.php?id=<?= $row['id_pemesanan']; ?>"
-                                                   target="_blank"
-                                                   class="btn btn-sm btn-success">
-                                                    <i class="fas fa-print"></i> Cetak
-                                                </a>
+                                                        <?php if (!empty($row['bukti_pembayaran'])) : ?>
+                                                            <a href="../uploads/<?= htmlspecialchars($row['bukti_pembayaran']); ?>"
+                                                               target="_blank"
+                                                               class="dropdown-item py-2 text-sm">
+                                                                <i class="fas fa-image fa-sm fa-fw mr-2 text-warning"></i> Lihat Bukti
+                                                            </a>
+                                                        <?php endif; ?>
 
-                                            <?php } elseif($status == "batal"){ ?>
+                                                        <?php if ($status == "lunas") : ?>
+                                                            <div class="dropdown-divider my-1"></div>
+                                                            <a href="kwitansi.php?id=<?= $row['id_pemesanan']; ?>"
+                                                               target="_blank"
+                                                               class="dropdown-item py-2 text-sm text-success font-weight-bold">
+                                                                <i class="fas fa-print fa-sm fa-fw mr-2"></i> Cetak Kwitansi
+                                                            </a>
+                                                        <?php endif; ?>
 
-                                                <span class="badge badge-danger">
-                                                    Batal
-                                                </span>
+                                                        <?php if ($status == "batal") : ?>
+                                                            <div class="dropdown-divider my-1"></div>
+                                                            <span class="dropdown-item py-2 text-sm text-danger disabled font-weight-bold">
+                                                                <i class="fas fa-times-circle fa-sm fa-fw mr-2"></i> Pesanan Batal
+                                                            </span>
+                                                        <?php endif; ?>
 
-                                            <?php } else { ?>
+                                                    </div>
+                                                </div>
+                                            </td>
 
-                                                <span class="badge badge-secondary">
-                                                    <?= ucfirst($status); ?>
-                                                </span>
+                                        </tr>
 
-                                            <?php } ?>
-                                        </td>
-                                    </tr>
+                                    <?php endwhile; ?>
 
-                                    <?php } ?>
-                                </tbody>
+                                    </tbody>
 
-                            </table>
-                        </div>
+                                </table>
+                            </div>
+
+                            <div id="no-result" class="text-center text-muted py-5 mx-3" style="display:none;">
+                                <div class="p-3 bg-light d-inline-block rounded-circle mb-3">
+                                    <i class="fas fa-search-minus fa-2x text-gray-400"></i>
+                                </div>
+                                <h6 class="font-weight-bold text-gray-800 mb-1">Data tidak cocok</h6>
+                                <p class="small text-muted mb-0">Periksa kembali ejaan atau kata kunci pencarian Anda.</p>
+                            </div>
+
+                        <?php else : ?>
+
+                            <div class="text-center py-5 my-3">
+                                <div class="p-4 bg-light d-inline-block rounded-circle mb-4">
+                                    <i class="fas fa-receipt fa-3x text-gray-300"></i>
+                                </div>
+                                <h5 class="text-gray-800 font-weight-bold mb-1">Belum Ada Transaksi</h5>
+                                <p class="text-muted small mb-0">
+                                    Data transaksi pembayaran atau pemesanan dari pembeli belum tersedia.
+                                </p>
+                            </div>
+
+                        <?php endif; ?>
 
                     </div>
 
@@ -216,26 +334,41 @@ ORDER BY p.id_pemesanan DESC");
 
 </div>
 
+<a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+</a>
+
 <script src="../assets/vendor/jquery/jquery.min.js"></script>
 <script src="../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="../assets/vendor/jquery-easing/jquery.easing.min.js"></script>
 <script src="../assets/js/sb-admin-2.min.js"></script>
 
 <script>
+// Fungsi live search tabel
 function filterTable() {
-    let input = document.getElementById("searchInput");
-    let filter = input.value.toLowerCase();
-    let table = document.getElementById("tableTransaksi");
-    let rows = table.getElementsByTagName("tr");
+    const input = document.getElementById("searchInput");
+    const filter = input.value.toLowerCase();
+    const table = document.getElementById("transaksiTable");
+    const noResult = document.getElementById("no-result");
 
-    for(let i = 1; i < rows.length; i++){
-        let rowText = rows[i].innerText.toLowerCase();
+    if (!table) return;
 
-        if(rowText.includes(filter)){
-            rows[i].style.display = "";
+    const tr = table.getElementsByTagName("tr");
+    let visibleCount = 0;
+
+    for (let i = 1; i < tr.length; i++) {
+        const text = tr[i].innerText.toLowerCase();
+        
+        if (text.includes(filter)) {
+            tr[i].style.display = "";
+            visibleCount++;
         } else {
-            rows[i].style.display = "none";
+            tr[i].style.display = "none";
         }
+    }
+
+    if (noResult) {
+        noResult.style.display = visibleCount === 0 ? "block" : "none";
     }
 }
 </script>

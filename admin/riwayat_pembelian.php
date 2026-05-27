@@ -16,14 +16,7 @@ if(!$id){
 
 $id = mysqli_real_escape_string($koneksi, $id);
 
-/*
-|----------------------------------
-| AMBIL DATA PEMBELI
-|----------------------------------
-*/
-$pembeli = mysqli_query($koneksi,
-"SELECT * FROM pembeli WHERE id_pembeli='$id'");
-
+$pembeli = mysqli_query($koneksi, "SELECT * FROM pembeli WHERE id_pembeli='$id'");
 $dataPembeli = mysqli_fetch_assoc($pembeli);
 
 if(!$dataPembeli){
@@ -31,30 +24,40 @@ if(!$dataPembeli){
     exit;
 }
 
-/*
-|----------------------------------
-| AMBIL RIWAYAT PEMBELIAN
-|----------------------------------
-*/
 $query = mysqli_query($koneksi,
 "SELECT 
     p.id_pemesanan,
     p.tanggal_pesan,
-    p.total_harga,
     p.status AS status_pemesanan,
+    p.deadline_dp,
 
     m.nama_mobil,
+    m.harga,
 
-    py.metode_bayar,
-    py.jumlah,
-    py.status AS status_pembayaran,
-    py.bukti_pembayaran
+    SUM(CASE WHEN py.jenis_pembayaran = 'booking' THEN py.jumlah ELSE 0 END) AS booking,
+    SUM(CASE WHEN py.jenis_pembayaran = 'dp' THEN py.jumlah ELSE 0 END) AS dp,
+    SUM(CASE WHEN py.jenis_pembayaran = 'pelunasan' THEN py.jumlah ELSE 0 END) AS pelunasan,
+
+    MAX(py.bukti_pembayaran) AS bukti_pembayaran
 
 FROM pemesanan p
 JOIN mobil m ON p.id_mobil = m.id_mobil
 LEFT JOIN pembayaran py ON p.id_pemesanan = py.id_pemesanan
 WHERE p.id_pembeli='$id'
+GROUP BY p.id_pemesanan
 ORDER BY p.id_pemesanan DESC");
+
+function rupiah($angka){
+    return "Rp " . number_format((float)$angka, 0, ',', '.');
+}
+
+function badgeStatus($status){
+    if($status == "lunas") return "success";
+    if($status == "booking") return "warning";
+    if($status == "dp") return "info";
+    if($status == "batal") return "danger";
+    return "secondary";
+}
 ?>
 
 <!DOCTYPE html>
@@ -65,6 +68,7 @@ ORDER BY p.id_pemesanan DESC");
 
     <link href="../assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
     <link href="../assets/css/sb-admin-2.min.css" rel="stylesheet">
+    <link href="../assets/css/admin.css" rel="stylesheet">
 </head>
 
 <body id="page-top">
@@ -85,7 +89,12 @@ ORDER BY p.id_pemesanan DESC");
             <div class="container-fluid">
 
                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                    <h1 class="h3 mb-0 text-gray-800">Riwayat Pembelian</h1>
+                    <div>
+                        <h1 class="h3 mb-0 text-gray-800">Riwayat Pembelian</h1>
+                        <p class="mb-0 text-gray-600">
+                            Ringkasan transaksi pembeli secara sederhana.
+                        </p>
+                    </div>
 
                     <a href="data_pembeli_admin.php" class="btn btn-sm btn-secondary shadow-sm">
                         <i class="fas fa-arrow-left fa-sm"></i> Kembali
@@ -105,89 +114,121 @@ ORDER BY p.id_pemesanan DESC");
                         <?php if(mysqli_num_rows($query) > 0){ ?>
 
                         <div class="table-responsive">
-                            <table class="table table-bordered table-hover text-center" width="100%" cellspacing="0">
-                                <thead class="thead-light">
+                            <table class="table table-bordered table-hover" width="100%" cellspacing="0">
+                                <thead class="thead-light text-center">
                                     <tr>
                                         <th>No</th>
                                         <th>Mobil</th>
-                                        <th>Tanggal Pesan</th>
-                                        <th>Total Harga</th>
-                                        <th>Status Pesanan</th>
-                                        <th>Metode Bayar</th>
-                                        <th>Bukti Transfer</th>
+                                        <th>Tanggal</th>
+                                        <th>Pembayaran</th>
+                                        <th>Sisa</th>
+                                        <th>Status</th>
+                                        <th>Bukti</th>
                                     </tr>
                                 </thead>
 
                                 <tbody>
                                     <?php
                                     $no = 1;
+
                                     while($row = mysqli_fetch_assoc($query)){
 
-                                        $statusPesanan = $row['status_pemesanan'];
+                                        $hargaMobil = (float)$row['harga'];
 
-                                        if($statusPesanan == "lunas"){
-                                            $badgePesanan = "success";
-                                        } elseif($statusPesanan == "booking"){
-                                            $badgePesanan = "warning";
-                                        } elseif($statusPesanan == "dp"){
-                                            $badgePesanan = "info";
-                                        } elseif($statusPesanan == "batal"){
-                                            $badgePesanan = "danger";
-                                        } else {
-                                            $badgePesanan = "secondary";
+                                        $booking = (float)$row['booking'];
+                                        $dp = (float)$row['dp'];
+                                        $pelunasan = (float)$row['pelunasan'];
+
+                                        $totalDibayar = $booking + $dp + $pelunasan;
+                                        $sisa = $hargaMobil - $totalDibayar;
+
+                                        if($sisa < 0){
+                                            $sisa = 0;
                                         }
 
-                                        
+                                        if($pelunasan > 0){
+                                            $tahap = "Pelunasan";
+                                            $badgeTahap = "success";
+                                        } elseif($dp > 0){
+                                            $tahap = "DP 30%";
+                                            $badgeTahap = "info";
+                                        } elseif($booking > 0){
+                                            $tahap = "Booking";
+                                            $badgeTahap = "warning";
+                                        } else {
+                                            $tahap = "Belum Bayar";
+                                            $badgeTahap = "secondary";
+                                        }
                                     ?>
 
                                     <tr>
-                                        <td><?= $no++; ?></td>
-
-                                        <td><?= htmlspecialchars($row['nama_mobil']); ?></td>
+                                        <td class="text-center"><?= $no++; ?></td>
 
                                         <td>
-                                            <?= date('d-m-Y H:i', strtotime($row['tanggal_pesan'])); ?>
+                                            <strong><?= htmlspecialchars($row['nama_mobil']); ?></strong>
+                                            <br>
+                                            <small class="text-muted">
+                                                Harga: <?= rupiah($hargaMobil); ?>
+                                            </small>
+                                        </td>
+
+                                        <td class="text-center">
+                                            <?= date('d-m-Y', strtotime($row['tanggal_pesan'])); ?>
+                                            <br>
+                                            <small class="text-muted">
+                                                <?= date('H:i', strtotime($row['tanggal_pesan'])); ?>
+                                            </small>
                                         </td>
 
                                         <td>
-                                            Rp <?= number_format($row['total_harga'], 0, ',', '.'); ?>
-                                        </td>
-
-                                        <td>
-                                            <span class="badge badge-<?= $badgePesanan; ?>">
-                                                <?= ucfirst($statusPesanan); ?>
+                                            <span class="badge badge-<?= $badgeTahap; ?> mb-2">
+                                                <?= $tahap; ?>
                                             </span>
-                                        </td>
+                                            <br>
 
-                                        <td>
-                                            <?php if(!empty($row['metode_bayar'])){ ?>
-                                                <?= ucfirst($row['metode_bayar']); ?>
-                                            <?php } else { ?>
-                                                cash
+                                            <small class="text-muted">Total Dibayar</small>
+                                            <br>
+                                            <strong><?= rupiah($totalDibayar); ?></strong>
+
+                                            <br>
+
+                                            <small class="text-muted">
+                                                Booking: <?= rupiah($booking); ?> |
+                                                DP: <?= rupiah($dp); ?> |
+                                                Pelunasan: <?= rupiah($pelunasan); ?>
+                                            </small>
+
+                                            <?php if($row['status_pemesanan'] == "booking" && !empty($row['deadline_dp'])){ ?>
+                                                <br>
+                                                <small class="text-danger">
+                                                    Batas DP: <?= date('d-m-Y', strtotime($row['deadline_dp'])); ?>
+                                                </small>
                                             <?php } ?>
                                         </td>
 
-                                        <td>
-                                            <?php if($row['metode_bayar'] == "transfer"){ ?>
-
-                                                <?php if(!empty($row['bukti_pembayaran'])){ ?>
-
-                                                    <a href="../uploads/<?= htmlspecialchars($row['bukti_pembayaran']); ?>"
-                                                    target="_blank"
-                                                    class="btn btn-sm btn-primary">
-                                                        <i class="fas fa-eye"></i> Lihat
-                                                    </a>
-
-                                                <?php } else { ?>
-
-                                                    <span class="text-danger">Belum Upload</span>
-
-                                                <?php } ?>
-
+                                        <td class="text-center">
+                                            <?php if($sisa <= 0){ ?>
+                                                <span class="badge badge-success">Lunas</span>
                                             <?php } else { ?>
+                                                <strong class="text-danger"><?= rupiah($sisa); ?></strong>
+                                            <?php } ?>
+                                        </td>
 
+                                        <td class="text-center">
+                                            <span class="badge badge-<?= badgeStatus($row['status_pemesanan']); ?>">
+                                                <?= ucfirst($row['status_pemesanan']); ?>
+                                            </span>
+                                        </td>
+
+                                        <td class="text-center">
+                                            <?php if(!empty($row['bukti_pembayaran']) && $row['bukti_pembayaran'] != "-"){ ?>
+                                                <a href="../uploads/<?= htmlspecialchars($row['bukti_pembayaran']); ?>"
+                                                   target="_blank"
+                                                   class="btn btn-sm btn-primary">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                            <?php } else { ?>
                                                 -
-
                                             <?php } ?>
                                         </td>
                                     </tr>

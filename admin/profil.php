@@ -76,26 +76,28 @@ $sidebar_file = $sidebar_map[$role] ?? "";
 
     <link href="../assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
     <link href="../assets/css/sb-admin-2.min.css" rel="stylesheet">
-
+    <link href="../assets/css/admin.css" rel="stylesheet">
+    
     <style>
+        /* CSS internal bawaan dipertahankan untuk kebutuhan fungsional avatar & password strength */
         .profile-avatar{
-            width: 110px;
-            height: 110px;
+            width: 120px;
+            height: 120px;
             border-radius: 50%;
             object-fit: cover;
             border: 4px solid #4e73df;
         }
 
         .profile-placeholder{
-            width: 110px;
-            height: 110px;
+            width: 120px;
+            height: 120px;
             border-radius: 50%;
             background: linear-gradient(135deg, #4e73df, #224abe);
             color: white;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 32px;
+            font-size: 36px;
             font-weight: bold;
             border: 4px solid #4e73df;
         }
@@ -107,10 +109,10 @@ $sidebar_file = $sidebar_map[$role] ?? "";
 
         .foto-btn{
             position: absolute;
-            right: 3px;
-            bottom: 3px;
-            width: 34px;
-            height: 34px;
+            right: 5px;
+            bottom: 5px;
+            width: 36px;
+            height: 36px;
             background: #4e73df;
             color: white;
             border-radius: 50%;
@@ -118,7 +120,13 @@ $sidebar_file = $sidebar_map[$role] ?? "";
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            border: 2px solid white;
+            border: 3px solid white;
+            transition: 0.2s;
+        }
+        
+        .foto-btn:hover {
+            background: #2e59d9;
+            transform: scale(1.05);
         }
 
         #inputFoto{
@@ -181,87 +189,96 @@ $sidebar_file = $sidebar_map[$role] ?? "";
 
             <div class="container-fluid">
 
-                <h1 class="h3 mb-4 text-gray-800">Profil Saya</h1>
+                <!-- TITLE -->
+                <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                    <div>
+                        <h1 class="h3 mb-1 text-gray-800 font-weight-bold">Profil Saya</h1>
+                    </div>
 
+                    <a href="dashboard.php" class="btn btn-secondary shadow-sm mt-3 mt-sm-0">
+                        <i class="fas fa-arrow-left fa-sm text-white-50"></i>
+                        Kembali
+                    </a>
+                </div>
+                <!-- Alert Flash Messages -->
                 <?php if($flash_ok){ ?>
-                    <div class="alert alert-success">
-                        <i class="fas fa-check-circle"></i>
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="fas fa-check-circle mr-2"></i>
                         <?= htmlspecialchars($flash_ok); ?>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                     </div>
                 <?php } ?>
 
                 <?php if($flash_err){ ?>
-                    <div class="alert alert-danger">
-                        <i class="fas fa-exclamation-circle"></i>
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="fas fa-exclamation-circle mr-2"></i>
                         <?= htmlspecialchars($flash_err); ?>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                     </div>
                 <?php } ?>
 
+                <!-- Form Utama -->
                 <form action="proses_profil.php" method="POST" enctype="multipart/form-data">
-
-                    <div class="card shadow mb-4">
-                        <div class="card-body d-flex align-items-center">
-
-                            <div class="foto-wrap mr-4">
-
-                                <?php if(!empty($foto_path)){ ?>
-                                    <img src="<?= htmlspecialchars($foto_path); ?>" 
-                                         class="profile-avatar" 
-                                         id="fotoPreview"
-                                         alt="Foto Profil">
-                                <?php } else { ?>
-                                    <div class="profile-placeholder" id="fotoPreview">
-                                        <?= htmlspecialchars($initials); ?>
-                                    </div>
-                                <?php } ?>
-
-                                <label for="inputFoto" class="foto-btn">
-                                    <i class="fas fa-camera"></i>
-                                </label>
-
-                                <input type="file" 
-                                       name="foto_profil" 
-                                       id="inputFoto"
-                                       accept="image/jpeg,image/png,image/webp">
-                            </div>
-
-                            <div>
-                                <h4 class="font-weight-bold text-gray-800 mb-1">
-                                    <?= htmlspecialchars($nama_tampil); ?>
-                                </h4>
-
-                                <span class="badge badge-primary mb-2">
-                                    <?= ucfirst(htmlspecialchars($role)); ?>
-                                </span>
-
-                                <p class="text-muted mb-0">
-                                    Klik ikon kamera untuk mengganti foto profil.
-                                    Format JPG, PNG, WEBP maksimal 2 MB.
-                                </p>
-
-                                <small class="text-success" id="namaFile"></small>
-                            </div>
-
-                        </div>
-                    </div>
-
+                    
                     <div class="row">
+                        
+                        <!-- Kolom Kiri: Foto Utama & Informasi Akun Pokok -->
+                        <div class="col-lg-4">
+                            
+                            <!-- Card Header Foto Profil -->
+                            <div class="card shadow mb-4 text-center">
+                                <div class="card-body pt-5 pb-4">
+                                    <div class="foto-wrap mb-3">
+                                        <?php if(!empty($foto_path)){ ?>
+                                            <img src="<?= htmlspecialchars($foto_path); ?>" 
+                                                 class="profile-avatar shadow" 
+                                                 id="fotoPreview"
+                                                 alt="Foto Profil">
+                                        <?php } else { ?>
+                                            <div class="profile-placeholder shadow" id="fotoPreview">
+                                                <?= htmlspecialchars($initials); ?>
+                                            </div>
+                                        <?php } ?>
 
-                        <div class="col-lg-6">
+                                        <label for="inputFoto" class="foto-btn shadow-sm" title="Ubah Foto">
+                                            <i class="fas fa-camera"></i>
+                                        </label>
 
+                                        <input type="file" 
+                                               name="foto_profil" 
+                                               id="inputFoto"
+                                               accept="image/jpeg,image/png,image/webp">
+                                    </div>
+
+                                    <h4 class="font-weight-bold text-gray-800 mb-2">
+                                        <?= htmlspecialchars($nama_tampil); ?>
+                                    </h4>
+
+                                    <span class="badge badge-pill badge-primary px-3 py-2 mb-3 shadow-sm">
+                                        <i class="fas fa-user shadow-sm mr-1"></i> <?= ucfirst(htmlspecialchars($role)); ?>
+                                    </span>
+
+                                    <p class="text-xs text-muted px-2">
+                                        Format file JPG, PNG, WEBP maksimal 2 MB.
+                                    </p>
+                                    <small class="text-success font-weight-bold d-block mt-2" id="namaFile"></small>
+                                </div>
+                            </div>
+
+                            <!-- Card Informasi Akun -->
                             <div class="card shadow mb-4">
-
-                                <div class="card-header py-3">
+                                <div class="card-header py-3 bg-light">
                                     <h6 class="m-0 font-weight-bold text-primary">
-                                        <i class="fas fa-user-shield"></i>
-                                        Informasi Akun
+                                        <i class="fas fa-user-shield mr-2"></i>Informasi Akun
                                     </h6>
                                 </div>
-
                                 <div class="card-body">
-
                                     <div class="form-group">
-                                        <label>Username</label>
+                                        <label class="text-gray-700 font-weight-bold text-sm"><i class="fas fa-at mr-1 text-muted"></i> Username</label>
                                         <input type="text"
                                                name="username"
                                                class="form-control"
@@ -269,95 +286,77 @@ $sidebar_file = $sidebar_map[$role] ?? "";
                                                required>
                                     </div>
 
-                                    <div class="form-group">
-                                        <label>Role</label>
-                                        <input type="text"
-                                               class="form-control"
-                                               value="<?= ucfirst(htmlspecialchars($role)); ?>"
-                                               readonly>
-                                    </div>
-
+                                    
                                 </div>
-
                             </div>
 
                         </div>
 
-                        <div class="col-lg-6">
+                        <!-- Kolom Kanan: Data Diri & Ganti Password -->
+                        <div class="col-lg-8">
 
+                            <!-- Card Data Diri -->
                             <div class="card shadow mb-4">
-
-                                <div class="card-header py-3">
+                                <div class="card-header py-3 bg-light">
                                     <h6 class="m-0 font-weight-bold text-primary">
-                                        <i class="fas fa-id-card"></i>
-                                        Data Diri
+                                        <i class="fas fa-id-card mr-2"></i>Data Diri Lengkap
                                     </h6>
                                 </div>
-
                                 <div class="card-body">
-
-                                    <div class="form-group">
-                                        <label>Nama Lengkap</label>
-                                        <input type="text"
-                                               name="nama"
-                                               class="form-control"
-                                               value="<?= htmlspecialchars($detail['nama'] ?? ''); ?>"
-                                               required>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="text-gray-700 font-weight-bold text-sm"><i class="fas fa-font mr-1 text-muted"></i> Nama Lengkap</label>
+                                                <input type="text"
+                                                       name="nama"
+                                                       class="form-control"
+                                                       value="<?= htmlspecialchars($detail['nama'] ?? ''); ?>"
+                                                       placeholder="Nama lengkap Anda"
+                                                       required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="text-gray-700 font-weight-bold text-sm"><i class="fas fa-phone mr-1 text-muted"></i> No. HP / WhatsApp</label>
+                                                <input type="text"
+                                                       name="no_hp"
+                                                       class="form-control"
+                                                       value="<?= htmlspecialchars($detail['no_hp'] ?? ''); ?>"
+                                                       placeholder="08xxxxxxxxxx">
+                                            </div>
+                                        </div>
                                     </div>
 
-                                    <div class="form-group">
-                                        <label>No. HP</label>
-                                        <input type="text"
-                                               name="no_hp"
-                                               class="form-control"
-                                               value="<?= htmlspecialchars($detail['no_hp'] ?? ''); ?>"
-                                               placeholder="08xxxxxxxxxx">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label>Alamat</label>
+                                    <div class="form-group mb-0">
+                                        <label class="text-gray-700 font-weight-bold text-sm"><i class="fas fa-map-marked-alt mr-1 text-muted"></i> Alamat Lengkap</label>
                                         <textarea name="alamat"
                                                   class="form-control"
                                                   rows="4"
-                                                  placeholder="Alamat lengkap"><?= htmlspecialchars($detail['alamat'] ?? ''); ?></textarea>
+                                                  placeholder="Tuliskan alamat lengkap rumah/kantor Anda..."><?= htmlspecialchars($detail['alamat'] ?? ''); ?></textarea>
                                     </div>
-
                                 </div>
-
                             </div>
 
-                        </div>
+                            <!-- Card Keamanan / Password -->
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3 bg-light">
+                                    <h6 class="m-0 font-weight-bold text-primary">
+                                        <i class="fas fa-lock mr-2"></i>Keamanan Akun (Ganti Password)
+                                    </h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="alert alert-info py-2 px-3 text-sm mb-3">
+                                        <i class="fas fa-info-circle mr-1"></i> Biarkan kolom di bawah ini <strong>kosong</strong> jika Anda tidak ingin mengganti password lama Anda.
+                                    </div>
 
-                    </div>
-
-                    <div class="card shadow mb-4">
-
-                        <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">
-                                <i class="fas fa-lock"></i>
-                                Ganti Password
-                            </h6>
-                        </div>
-
-                        <div class="card-body">
-
-                            <p class="text-muted">
-                                Kosongkan semua kolom password jika tidak ingin mengganti password.
-                            </p>
-
-                            <div class="row">
-
-                                <div class="col-md-4">
                                     <div class="form-group">
-                                        <label>Password Lama</label>
-
+                                        <label class="text-gray-700 font-weight-bold text-sm">Password Saat Ini</label>
                                         <div class="password-wrap">
                                             <input type="password"
                                                    name="password_lama"
                                                    id="pwLama"
                                                    class="form-control"
-                                                   placeholder="Password lama">
-
+                                                   placeholder="Masukkan password saat ini">
                                             <button type="button" 
                                                     class="toggle-password"
                                                     onclick="togglePassword('pwLama', this)">
@@ -365,74 +364,73 @@ $sidebar_file = $sidebar_map[$role] ?? "";
                                             </button>
                                         </div>
                                     </div>
-                                </div>
 
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>Password Baru</label>
-
-                                        <div class="password-wrap">
-                                            <input type="password"
-                                                   name="password_baru"
-                                                   id="pwBaru"
-                                                   class="form-control"
-                                                   placeholder="Password baru"
-                                                   oninput="cekKekuatanPassword(this.value)">
-
-                                            <button type="button" 
-                                                    class="toggle-password"
-                                                    onclick="togglePassword('pwBaru', this)">
-                                                <i class="fas fa-eye"></i>
-                                            </button>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group mb-md-0">
+                                                <label class="text-gray-700 font-weight-bold text-sm">Password Baru</label>
+                                                <div class="password-wrap">
+                                                    <input type="password"
+                                                           name="password_baru"
+                                                           id="pwBaru"
+                                                           class="form-control"
+                                                           placeholder="Minimal 6 karakter"
+                                                           oninput="cekKekuatanPassword(this.value)">
+                                                    <button type="button" 
+                                                            class="toggle-password"
+                                                            onclick="togglePassword('pwBaru', this)">
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                </div>
+                                                <div class="strength-bar">
+                                                    <div class="strength-fill" id="strengthFill"></div>
+                                                </div>
+                                                <small id="strengthText" class="text-muted d-block mt-1 font-weight-bold"></small>
+                                            </div>
                                         </div>
-
-                                        <div class="strength-bar">
-                                            <div class="strength-fill" id="strengthFill"></div>
+                                        <div class="col-md-6">
+                                            <div class="form-group mb-0">
+                                                <label class="text-gray-700 font-weight-bold text-sm">Konfirmasi Password Baru</label>
+                                                <div class="password-wrap">
+                                                    <input type="password"
+                                                           name="password_konfirm"
+                                                           id="pwKonfirm"
+                                                           class="form-control"
+                                                           placeholder="Ulangi password baru"
+                                                           oninput="cekKonfirmasiPassword()">
+                                                    <button type="button" 
+                                                            class="toggle-password"
+                                                            onclick="togglePassword('pwKonfirm', this)">
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                </div>
+                                                <small id="konfirmasiText" class="d-block mt-1 font-weight-bold"></small>
+                                            </div>
                                         </div>
-
-                                        <small id="strengthText" class="text-muted"></small>
                                     </div>
                                 </div>
+                            </div>
 
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>Konfirmasi Password</label>
-
-                                        <div class="password-wrap">
-                                            <input type="password"
-                                                   name="password_konfirm"
-                                                   id="pwKonfirm"
-                                                   class="form-control"
-                                                   placeholder="Ulangi password"
-                                                   oninput="cekKonfirmasiPassword()">
-
-                                            <button type="button" 
-                                                    class="toggle-password"
-                                                    onclick="togglePassword('pwKonfirm', this)">
-                                                <i class="fas fa-eye"></i>
+                            <div class="row">
+                                <!-- Mengganti mx-auto menjadi ml-auto agar mendorong card ke pojok kanan -->
+                                <div class="col-md-6 ml-auto">
+                                    
+                                    <div class="card shadow mb-5">
+                                        <div class="card-body d-flex justify-content-between align-items-center py-3">
+                                            <a href="javascript:history.back()" class="btn btn-light text-gray-700 border">
+                                                <i class="fas fa-arrow-left mr-1"></i> Kembali
+                                            </a>
+                                            <button type="submit" class="btn btn-primary px-4">
+                                                <i class="fas fa-save mr-1"></i> Simpan Perubahan
                                             </button>
                                         </div>
-
-                                        <small id="konfirmasiText"></small>
                                     </div>
-                                </div>
 
+                                </div>
                             </div>
 
                         </div>
 
-                    </div>
-
-                    <div class="d-flex justify-content-end mb-5">
-                        <a href="javascript:history.back()" class="btn btn-secondary mr-2">
-                            <i class="fas fa-arrow-left"></i>
-                            Kembali
-                        </a>
-
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save"></i>
-                            Simpan Perubahan
-                        </button>
                     </div>
 
                 </form>
@@ -475,7 +473,7 @@ inputFoto.addEventListener("change", function(){
         if(preview.tagName === "DIV"){
             const img = document.createElement("img");
             img.id = "fotoPreview";
-            img.className = "profile-avatar";
+            img.className = "profile-avatar shadow";
             img.alt = "Foto Profil";
 
             preview.replaceWith(img);
@@ -487,7 +485,7 @@ inputFoto.addEventListener("change", function(){
 
     reader.readAsDataURL(file);
 
-    namaFile.innerHTML = '<i class="fas fa-check"></i> ' + file.name + ' siap diupload';
+    namaFile.innerHTML = '<i class="fas fa-check-circle mr-1"></i> ' + file.name + ' siap diupload';
 });
 
 function togglePassword(id, button){
@@ -525,18 +523,18 @@ function cekKekuatanPassword(value){
     if(score <= 1){
         fill.style.width = "25%";
         fill.style.background = "#e74a3b";
-        text.className = "text-danger";
-        text.innerHTML = "Password lemah";
+        text.className = "text-danger text-xs";
+        text.innerHTML = "<i class='fas fa-times-circle'></i> Password lemah";
     } else if(score <= 3){
         fill.style.width = "60%";
         fill.style.background = "#f6c23e";
-        text.className = "text-warning";
-        text.innerHTML = "Password cukup";
+        text.className = "text-warning text-xs";
+        text.innerHTML = "<i class='fas fa-exclamation-triangle'></i> Password cukup";
     } else {
         fill.style.width = "100%";
         fill.style.background = "#1cc88a";
-        text.className = "text-success";
-        text.innerHTML = "Password kuat";
+        text.className = "text-success text-xs";
+        text.innerHTML = "<i class='fas fa-check-circle'></i> Password kuat";
     }
 }
 
@@ -551,11 +549,11 @@ function cekKonfirmasiPassword(){
     }
 
     if(baru === konfirm){
-        text.className = "text-success";
-        text.innerHTML = "Password cocok";
+        text.className = "text-success text-xs";
+        text.innerHTML = "<i class='fas fa-check-circle'></i> Password cocok";
     } else {
-        text.className = "text-danger";
-        text.innerHTML = "Password tidak cocok";
+        text.className = "text-danger text-xs";
+        text.innerHTML = "<i class='fas fa-times-circle'></i> Password tidak cocok";
     }
 }
 

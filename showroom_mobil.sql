@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 19, 2026 at 04:16 AM
+-- Generation Time: May 26, 2026 at 07:22 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -41,7 +41,7 @@ CREATE TABLE `admin` (
 --
 
 INSERT INTO `admin` (`id_admin`, `id_user`, `nama`, `alamat`, `no_hp`, `foto`) VALUES
-(1, 18, 'Mahesa Ibrahim', 'JL ARIA SANTIKA GG SAMAUN RT 3 RW 3', '089627912778', '1778812497_profil_18.jpg');
+(1, 18, 'Mahesa Ibrahim', 'JL ARIA SANTIKA GG SAMAUN RT 3 RW 3 SUMUR PACING KARAWACI KOTA TANGERANG BANTEN', '089627912778', '1779366825_profil_18.jpeg');
 
 -- --------------------------------------------------------
 
@@ -61,13 +61,6 @@ CREATE TABLE `administrasi_kendaraan` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `administrasi_kendaraan`
---
-
-INSERT INTO `administrasi_kendaraan` (`id_administrasi`, `id_mobil`, `no_stnk`, `tanggal_stnk`, `status_stnk`, `no_bpkb`, `status_bpkb`, `catatan`, `created_at`, `updated_at`) VALUES
-(1, 3, '21313212312', '2027-06-30', 'aktif', '12313123123', 'ada', 'anjay gurinjay makan bajay', '2026-05-16 15:14:24', '2026-05-16 15:14:24');
 
 -- --------------------------------------------------------
 
@@ -127,7 +120,7 @@ CREATE TABLE `mobil` (
   `id_mobil` int(11) NOT NULL,
   `id_penjual` int(11) DEFAULT NULL,
   `nama_mobil` varchar(100) DEFAULT NULL,
-  `harga` decimal(15,2) DEFAULT NULL,
+  `harga` decimal(15,0) DEFAULT NULL,
   `stok` int(11) DEFAULT NULL,
   `status` enum('tersedia','dipesan','terjual') DEFAULT NULL,
   `deskripsi` text NOT NULL,
@@ -140,12 +133,10 @@ CREATE TABLE `mobil` (
 --
 
 INSERT INTO `mobil` (`id_mobil`, `id_penjual`, `nama_mobil`, `harga`, `stok`, `status`, `deskripsi`, `tahun`, `foto`) VALUES
-(3, 1, 'BMW', 650000000.00, 1, 'tersedia', 'BMW (Bayerische Motoren Werke) adalah produsen kendaraan premium dan mewah asal Jerman yang didirikan pada tahun 1916. Merek ini sangat terkenal dengan performa mesinnya, warisan motorsport melalui divisi BMW M, serta desain yang elegan', '2022', '1778780640_bmw.jpg'),
-(6, 2, 'Pajero Sport', 230000000.00, 1, 'tersedia', 'Pajero Sport tangguh untuk perjalanan keluarga dan offroad', '2023', 'pajero.jpeg'),
-(7, 1, 'Lamborghini', 850000000.00, 1, 'tersedia', 'Mobil Lamborghini adalah salah satu merek supercar terkemuka yang berasal dari Italia, dikenal karena desain yang menawan dan performa yang sangat tinggi. Sejak didirikan pada tahun 1963 oleh Ferruccio Lamborghini, perusahaan ini telah menjadi simbol kecepatan, kekuatan, dan kemewahan dalam dunia otomotif  Lamborghini telah menghasilkan berbagai model legendaris yang mendefinisikan ulang standar mobil super, dan terus berinovasi dalam desain dan teknologi', '2010', '1778780553_lamborghini.jpg'),
-(11, 1, 'Ferrari', 15000000000.00, 1, 'tersedia', 'Ferrari adalah produsen mobil super (\r\n) dan hypercar performa tinggi asal Italia yang didirikan oleh Enzo Ferrari pada tahun 1947 di Maranello. Dikenal dengan logo \"Kuda Jingkrak\", Ferrari identik dengan kecepatan, teknologi balap Formula 1, desain aerodinamis yang menawan, serta mesin bertenaga besar, seringkali menggunakan konfigurasi V8 atau V12', '2020', 'ferrari.jpg'),
-(13, 1, 'Bugatti', 50000000000.00, 1, 'tersedia', 'Bugatti adalah produsen hypercar dan mobil mewah asal Prancis yang didirikan oleh Ettore Bugatti pada tahun 1909. Merek ini terkenal secara global karena menggabungkan seni (Ettore berasal dari keluarga seniman) dengan teknologi mesin ekstrem, menghasilkan kendaraan tercepat, terkuat, dan termahal di dunia', '2025', '1778930598_bugatti.jpg'),
-(14, 1, 'MClaren', 40000000000.00, 1, 'tersedia', 'McLaren adalah produsen supercar dan hypercar mewah asal Woking, Inggris, yang terkenal karena memproduksi mobil dengan teknologi Formula 1 untuk jalan raya. Lahir langsung dari lintasan balap, setiap mobil McLaren dirancang dengan fokus mutlak pada kecepatan ekstrem, bobot super ringan, dan aerodinamika radikal banget', '2023', '1778931027_mclaren.jpg');
+(16, 3, 'Honda Civic FL5', 425000000, 1, 'tersedia', 'Honda Civic 2021 – Sedan premium dengan desain sporty dan performa bertenaga yang siap pakai.\r\n\r\nSpesifikasi & Kondisi:\r\n\r\nTransmisi: Otomatis (CVT) halus dan responsif\r\n\r\nWarna: Hitam Metalik\r\n\r\nOdometer: 35.000 KM (Low KM, pemakaian apik)\r\n\r\nSurat: Lengkap (STNK, BPKB, Pajak hidup)\r\n\r\nKeunggulan:\r\n\r\nMesin turbo yang bertenaga namun tetap irit bahan bakar.\r\n\r\nDesain eksterior agresif dengan interior mewah berbahan premium.\r\n\r\nFitur canggih termasuk layar sentuh modern dan sistem keselamatan lengkap.\r\n\r\nKondisi istimewa, mesin kering, kaki-kaki senyap, serta bebas banjir dan tabrakan.', '2021', 'da5374831dd107eb09f9313668823d43.jpg'),
+(20, 3, 'Alphard HEV', 2000000000, 1, 'tersedia', 'Toyota Alphard HEV bekas kondisi sangat terawat dan siap pakai. Mengusung mesin hybrid yang irit bahan bakar namun tetap bertenaga, cocok untuk penggunaan harian maupun perjalanan jauh. Interior mewah dan kabin super lega memberikan kenyamanan maksimal untuk keluarga maupun kebutuhan bisnis.\r\n\r\nSpesifikasi singkat:\r\n\r\nMesin Hybrid Electric Vehicle (HEV)\r\nTransmisi otomatis\r\nInterior captain seat premium\r\nSunroof / moonroof\r\nHead unit modern & kamera parkir\r\nAC digital double blower\r\nDoor elektrik & smart key\r\nKilometer rendah dan terawat\r\n\r\nKondisi:\r\n\r\nMesin halus dan normal\r\nPajak hidup\r\nInterior bersih dan rapi\r\nKaki-kaki nyaman\r\nBody mulus\r\nSiap pakai tanpa PR', '2020', '1779376910_8169e7bb1301c57fe025a495139ea1cf.jpg'),
+(21, 3, 'BYD Seal', 250000000, 1, 'tersedia', 'BYD kondisi bekas terawat dan siap pakai. Hadir dengan desain modern dan teknologi canggih yang memberikan kenyamanan serta performa responsif saat berkendara. Cocok digunakan untuk harian maupun perjalanan jauh dengan konsumsi energi yang efisien.\r\n\r\nSpesifikasi singkat:\r\n\r\nMotor listrik bertenaga & responsif\r\nTransmisi otomatis\r\nInterior premium modern\r\nHead unit touchscreen\r\nKamera parkir & sensor\r\nAC digital\r\nSmart key & start stop button\r\nFitur keselamatan lengkap\r\n\r\nKondisi:\r\n\r\nBody mulus dan terawat\r\nInterior bersih\r\nMesin / baterai normal\r\nSuspensi nyaman\r\nPajak hidup\r\nSiap pakai tanpa PR', '2020', 'e9db5e1619a9da8f2c76380d788202ee.jpg'),
+(22, 4, 'Pajero Sport', 500000000, 1, 'tersedia', 'mobil ini bagus mantap sangat cocok untuk perjalanan jauh', '2020', '4995153399e03c2cab9a722888eeb559.jpg');
 
 -- --------------------------------------------------------
 
@@ -159,18 +150,20 @@ CREATE TABLE `pembayaran` (
   `metode_bayar` enum('tunai','transfer') DEFAULT NULL,
   `jumlah` decimal(15,2) DEFAULT NULL,
   `status` enum('pending','verifikasi','diterima') DEFAULT NULL,
-  `bukti_pembayaran` varchar(255) NOT NULL
+  `bukti_pembayaran` varchar(255) NOT NULL,
+  `jenis_pembayaran` enum('booking','dp','pelunasan') DEFAULT 'booking'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `pembayaran`
 --
 
-INSERT INTO `pembayaran` (`id_pembayaran`, `id_pemesanan`, `metode_bayar`, `jumlah`, `status`, `bukti_pembayaran`) VALUES
-(11, 14, 'transfer', NULL, '', '1778223780_1.jpeg'),
-(15, 21, 'transfer', NULL, '', '1778322141_Screenshot_8-5-2026_17547_www.bing.com.jpeg'),
-(16, 22, 'transfer', NULL, '', '1778780711_fddd9fb4dd5e11c8ad0c27e2d416ee6f.jpg'),
-(17, 23, '', NULL, '', '');
+INSERT INTO `pembayaran` (`id_pembayaran`, `id_pemesanan`, `metode_bayar`, `jumlah`, `status`, `bukti_pembayaran`, `jenis_pembayaran`) VALUES
+(41, 38, 'tunai', 500000.00, 'diterima', '-', 'booking'),
+(42, 38, '', 127000000.00, 'diterima', '-', 'dp'),
+(43, 38, '', 297500000.00, 'diterima', '-', 'pelunasan'),
+(44, 39, 'transfer', 500000.00, 'diterima', 'bukti_booking_1779374034_4837.jpg', 'booking'),
+(45, 39, '', 127000000.00, 'diterima', '-', 'dp');
 
 -- --------------------------------------------------------
 
@@ -192,12 +185,7 @@ CREATE TABLE `pembeli` (
 --
 
 INSERT INTO `pembeli` (`id_pembeli`, `id_user`, `nama`, `alamat`, `no_hp`, `foto`) VALUES
-(2, 6, 'lita', 'sondol', '083324234243', NULL),
-(3, 7, 'reva', 'bumi indah', '083243423424', NULL),
-(4, 9, 'lala', 'gelam', '081345668921', NULL),
-(5, 10, 'Fitri-ana member ke-9 H2H', 'Walet City Gacor Abies', '085210494158', NULL),
-(6, 11, 'Inong', 'Pondok Sukatani Permai', '081315352350', NULL),
-(8, 19, 'Ibrahim Mahesa', 'JL ARIA SANTIKA GG SAMAUN RT 5 RW 5', '085693419679', '1778812854_profil_19.jpg');
+(8, 19, 'Mahesa Ibrahim', 'JL ARIA SANTIKA GG SAMAUN RT 5 RW 5', '085693419679', '1778812854_profil_19.jpg');
 
 -- --------------------------------------------------------
 
@@ -211,20 +199,18 @@ CREATE TABLE `pemesanan` (
   `id_mobil` int(11) DEFAULT NULL,
   `tanggal_pesan` datetime DEFAULT NULL,
   `total_harga` decimal(15,2) DEFAULT NULL,
-  `status` enum('booking','dp','lunas','batal') DEFAULT NULL
+  `status` enum('booking','dp','lunas','batal') DEFAULT 'booking',
+  `deadline_dp` date DEFAULT NULL,
+  `foto_ktp` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `pemesanan`
 --
 
-INSERT INTO `pemesanan` (`id_pemesanan`, `id_pembeli`, `id_mobil`, `tanggal_pesan`, `total_harga`, `status`) VALUES
-(14, 4, 3, '2026-05-08 14:01:58', 9999999999999.99, 'lunas'),
-(21, 6, 6, '2026-05-09 17:21:48', 6000000000.00, 'lunas'),
-(22, 3, 7, '2026-05-15 00:44:32', 850000000.00, 'lunas'),
-(23, 8, 6, '2026-05-16 18:51:24', 250000000.00, 'lunas'),
-(24, 8, 3, '2026-05-16 19:06:18', 700000000.00, 'lunas'),
-(25, 8, 6, '2026-05-16 21:39:33', 250000000.00, 'booking');
+INSERT INTO `pemesanan` (`id_pemesanan`, `id_pembeli`, `id_mobil`, `tanggal_pesan`, `total_harga`, `status`, `deadline_dp`, `foto_ktp`) VALUES
+(38, 8, 16, '2026-05-21 17:15:36', 425000000.00, 'lunas', '2026-05-28', 'ktp_1779359328_3065.jpg'),
+(39, 8, 16, '2026-05-21 21:33:54', 425000000.00, 'dp', '2026-05-28', 'ktp_1779379798_3365.jpg');
 
 -- --------------------------------------------------------
 
@@ -251,8 +237,7 @@ CREATE TABLE `penawaran` (
 --
 
 INSERT INTO `penawaran` (`id_penawaran`, `id_penjual`, `id_mobil`, `harga_tawar`, `tanggal`, `status`, `metode_pembayaran`, `tanggal_keputusan`, `catatan_admin`, `catatan`, `bukti_pembayaran`) VALUES
-(2, 3, 14, 35000000000.00, '2026-05-17', 'diterima', 'transfer', '2026-05-17 00:38:29', 'sudah di tf', 'mantap', 'bukti_penawaran_1778953109_1245.jpg'),
-(3, 3, 6, 230000000.00, '2026-05-17', 'diterima', 'transfer', '2026-05-17 00:50:16', 'nih sudah', 'promo gasgasgass!!!', 'bukti_penawaran_1778953816_1852.jpg');
+(4, 3, 16, 425000000.00, '2026-05-21', 'diterima', 'tunai', '2026-05-21 17:14:37', '', 'Honda Civic 2021 – Sedan premium dengan desain sporty dan performa bertenaga yang siap pakai.\r\n\r\nSpesifikasi & Kondisi:\r\n\r\nTransmisi: Otomatis (CVT) halus dan responsif\r\n\r\nWarna: Hitam Metalik\r\n\r\nOdometer: 35.000 KM (Low KM, pemakaian apik)\r\n\r\nSurat: Lengkap (STNK, BPKB, Pajak hidup)\r\n\r\nKeunggulan:\r\n\r\nMesin turbo yang bertenaga namun tetap irit bahan bakar.\r\n\r\nDesain eksterior agresif dengan interior mewah berbahan premium.\r\n\r\nFitur canggih termasuk layar sentuh modern dan sistem keselamatan lengkap.\r\n\r\nKondisi istimewa, mesin kering, kaki-kaki senyap, serta bebas banjir dan tabrakan.', NULL);
 
 -- --------------------------------------------------------
 
@@ -275,9 +260,7 @@ CREATE TABLE `pengiriman` (
 --
 
 INSERT INTO `pengiriman` (`id_pengiriman`, `id_pemesanan`, `id_kurir`, `alamat_kirim`, `status`, `bukti_pengiriman`, `tanggal_terkirim`) VALUES
-(1, 24, 1, 'JL ARIA SANTIKA GG SAMAUN RT 5 RW 5', 'terkirim', 'bukti_pengiriman_1778948968_1731.jpg', '2026-05-16 23:29:28'),
-(2, 23, 1, 'JL ARIA SANTIKA GG SAMAUN RT 5 RW 5', 'terkirim', 'bukti_pengiriman_1778949454_3374.jpg', '2026-05-16 23:37:34'),
-(3, 22, 1, 'perumahan wisma mas blok z no 99 rt 99 rw 99', 'terkirim', 'bukti_pengiriman_1779128934_3372.jpg', '2026-05-19 01:28:54');
+(6, 38, 1, 'JL ARIA SANTIKA GG SAMAUN RT 5 RW 5', 'terkirim', 'bukti_pengiriman_1779772850_1131.jpg', '2026-05-26 12:20:50');
 
 -- --------------------------------------------------------
 
@@ -299,9 +282,8 @@ CREATE TABLE `penjual` (
 --
 
 INSERT INTO `penjual` (`id_penjual`, `id_user`, `nama`, `alamat`, `no_hp`, `foto`) VALUES
-(1, 2, 'Titania Najwa', 'perumahan sukatani permai', '082434234234', NULL),
-(2, 8, 'nabila', 'dimana aja', '084234234234', NULL),
-(3, 21, 'Titania Najwa', 'Perumahan sukatani permai blok E no 9', '08582323232323', '1778953216_profil_21.jpg');
+(3, 21, 'Titania Najwa', 'Perumahan sukatani permai blok E no 9', '08582323232323', '1778953216_profil_21.jpg'),
+(4, 23, 'Ibrahim Mahesa', 'Jl aria santika gg samaun rt 3 rw 3 sumur pacing kota tangerang banten', '085693410670', NULL);
 
 -- --------------------------------------------------------
 
@@ -314,14 +296,6 @@ CREATE TABLE `surat_jalan` (
   `id_pengiriman` int(11) DEFAULT NULL,
   `tanggal_cetak` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `surat_jalan`
---
-
-INSERT INTO `surat_jalan` (`id_suratjalan`, `id_pengiriman`, `tanggal_cetak`) VALUES
-(1, 1, '2026-05-16 23:24:44'),
-(2, 2, '2026-05-16 23:36:01');
 
 -- --------------------------------------------------------
 
@@ -341,22 +315,11 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id_user`, `username`, `password`, `role`) VALUES
-(2, 'titalys', '$2y$10$EHELAy94aUvyhbTuX0zQ2udmTDPwbiOap.1ytdcZ1OODBf6X.Hc46', 'penjual'),
-(4, 'mikhayla', '$2y$10$Kx2nfm1.v9hzSgJgiqYMQ.ZBFu.SowKipqJpnm.OkHBC3n2kkK.F.', 'admin'),
-(6, 'lita', '$2y$10$YpPlpGOX70BdfHzglK2RieJtBJBNBTMam7S.KDkYrnyMZobCpVuau', 'pembeli'),
-(7, 'reva', '$2y$10$DjHEyww7Y/pcySFpJLdKTuPHImyrHXztG8SpgNMhbZt/IZ0mcUzky', 'pembeli'),
-(8, 'nabila', '$2y$10$U65n1JE/YPUVF2OjJHNKee5hsHVlJEhZulQix0EZVj7rm1DNm5n6a', 'penjual'),
-(9, 'hanisut', '$2y$10$Typl6Zm6UYNsTHwSIKYZxuIUhzZbNbeQhm9kOrUwJ6w3ckFn1EbtO', 'pembeli'),
-(10, 'lee jehoon gf', '$2y$10$qamzo9YsL09KLcvdeQt3R.fejkZjeI6tPOtSyaDueBkH4zH6JcEKS', 'pembeli'),
-(11, 'customer', '$2y$10$QRJIhW.DTgXZUp3HXf31e.7XIOCVdYlBAQoMqyEao1aKTly9gh6kG', 'pembeli'),
-(13, 'pembeli', '123', 'pembeli'),
-(14, 'imahesz', '123', 'pembeli'),
-(15, 'gendut', '123', 'pembeli'),
-(17, 'penjual', '123', 'penjual'),
 (18, 'admin123', '$2y$10$qSbxyfHQ3UpWqp9pXyYwvOGP6btKaP.WDkIdI2gVwF1RsfjrEzm0i', 'admin'),
 (19, 'pembeli123', '$2y$10$kmQLqo5Eb17Pad/xN6fPwO3dfs03s5yhBQty2qEQlaiGc.R70.zUm', 'pembeli'),
 (20, 'kurir123', '$2y$10$KdjjhVoqFfoW2CBAAM7zbOxFwVizbjEJjUhX/QuRXtfF01XSPY6de', 'kurir'),
-(21, 'penjual123', '$2y$10$rinTb5y67a6DXPXHfVd7lOiKXWjz0jHJfUOTocMxC3ZGSqwyo/gyO', 'penjual');
+(21, 'penjual123', '$2y$10$rinTb5y67a6DXPXHfVd7lOiKXWjz0jHJfUOTocMxC3ZGSqwyo/gyO', 'penjual'),
+(23, 'penjual456', '$2y$10$n0SRFgoss765it57ASihhu4KSVFxdxFJ8tIVgMcYX6lWylzNtrBeu', 'penjual');
 
 --
 -- Indexes for dumped tables
@@ -498,55 +461,55 @@ ALTER TABLE `laporan`
 -- AUTO_INCREMENT for table `mobil`
 --
 ALTER TABLE `mobil`
-  MODIFY `id_mobil` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id_mobil` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `pembayaran`
 --
 ALTER TABLE `pembayaran`
-  MODIFY `id_pembayaran` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id_pembayaran` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
 
 --
 -- AUTO_INCREMENT for table `pembeli`
 --
 ALTER TABLE `pembeli`
-  MODIFY `id_pembeli` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id_pembeli` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `pemesanan`
 --
 ALTER TABLE `pemesanan`
-  MODIFY `id_pemesanan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id_pemesanan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
 -- AUTO_INCREMENT for table `penawaran`
 --
 ALTER TABLE `penawaran`
-  MODIFY `id_penawaran` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_penawaran` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `pengiriman`
 --
 ALTER TABLE `pengiriman`
-  MODIFY `id_pengiriman` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_pengiriman` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `penjual`
 --
 ALTER TABLE `penjual`
-  MODIFY `id_penjual` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_penjual` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `surat_jalan`
 --
 ALTER TABLE `surat_jalan`
-  MODIFY `id_suratjalan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_suratjalan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- Constraints for dumped tables
@@ -601,7 +564,7 @@ ALTER TABLE `pemesanan`
 --
 ALTER TABLE `penawaran`
   ADD CONSTRAINT `penawaran_ibfk_1` FOREIGN KEY (`id_penjual`) REFERENCES `penjual` (`id_penjual`),
-  ADD CONSTRAINT `penawaran_ibfk_2` FOREIGN KEY (`id_mobil`) REFERENCES `mobil` (`id_mobil`);
+  ADD CONSTRAINT `penawaran_ibfk_2` FOREIGN KEY (`id_mobil`) REFERENCES `mobil` (`id_mobil`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `pengiriman`

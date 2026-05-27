@@ -67,7 +67,8 @@ $totalPembeliLunas = mysqli_num_rows(mysqli_query($koneksi, "
     
     <link href="../assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
     <link href="../assets/css/sb-admin-2.min.css" rel="stylesheet">
-
+    <link href="../assets/css/admin.css" rel="stylesheet">
+    
     <style>
         .page-title {
             font-weight: 700;
